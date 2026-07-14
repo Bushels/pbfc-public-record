@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PBFC Public Record — Picture Butte Feeder Cooperative</title>
+  <meta name="description" content="A citation-first public record of Picture Butte Feeder Cooperative (ABKB 2501-02733). Built from court filings. Help complete the record by submitting missing documents." />
+  <meta name="robots" content="index,follow" />
+  <meta property="og:title" content="PBFC Public Record" />
+  <meta property="og:description" content="Court-document record of Alberta's largest feeder association crisis. Missing: Inspection Report + AGM materials. Tips welcome." />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f4f0e6;
+      --bg-deep: #ebe4d4;
+      --paper: #fffdf7;
+      --ink: #1a1814;
+      --ink-soft: #4a453c;
+      --muted: #6e6658;
+      --line: #d4cbb8;
+      --accent: #8b1e1e;
+      --accent-soft: #f3e2e0;
+      --ok: #1f4d3a;
+      --ok-soft: #e3efe8;
+      --warn: #8a5a12;
+      --warn-soft: #f7edd8;
+      --gap: #3d4f6f;
+      --gap-soft: #e7ecf4;
+      --shadow: 0 1px 0 rgba(26,24,20,.06), 0 12px 40px rgba(26,24,20,.06);
+      --radius: 10px;
+      --max: 72rem;
+      --serif: "Source Serif 4", Georgia, serif;
+      --sans: "Source Sans 3", system-ui, sans-serif;
+      --mono: "IBM Plex Mono", ui-monospace, monospace;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 500px at 10% -10%, #fff9ea 0%, transparent 55%),
+        radial-gradient(900px 400px at 100% 0%, #f0e7d6 0%, transparent 50%),
+        var(--bg);
+      font-family: var(--sans);
+      font-size: 17px;
+      line-height: 1.55;
+    }
+
+    a { color: var(--accent); text-underline-offset: 3px; }
+    a:hover { color: #6a1515; }
+
+    .wrap { width: min(var(--max), calc(100% - 2rem)); margin-inline: auto; }
+
+    /* Top bar */
+    .topbar {
+      position: sticky; top: 0; z-index: 40;
+      backdrop-filter: blur(10px);
+      background: color-mix(in srgb, var(--bg) 88%, transparent);
+      border-bottom: 1px solid var(--line);
+    }
+    .topbar-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; padding: .75rem 0; flex-wrap: wrap;
+    }
+    .brand {
+      display: flex; flex-direction: column; gap: .1rem;
+      text-decoration: none; color: inherit;
+    }
+    .brand strong {
+      font-family: var(--serif); font-size: 1.05rem; letter-spacing: -.01em;
+    }
+    .brand span {
+      font-family: var(--mono); font-size: .72rem; color: var(--muted); letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    nav { display: flex; flex-wrap: wrap; gap: .35rem .85rem; align-items: center; }
+    nav a {
+      color: var(--ink-soft); text-decoration: none; font-size: .92rem; font-weight: 500;
+    }
+    nav a:hover { color: var(--accent); }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: .45rem;
+      border: 1px solid transparent; border-radius: 999px;
+      padding: .65rem 1.05rem; font-weight: 600; font-size: .92rem;
+      text-decoration: none; cursor: pointer; transition: .15s ease;
+      font-family: var(--sans);
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: #6f1717; color: #fff; }
+    .btn-ghost {
+      background: transparent; color: var(--ink); border-color: var(--line);
+    }
+    .btn-ghost:hover { background: var(--paper); color: var(--ink); }
+
+    /* Hero */
+    header.hero { padding: 2.75rem 0 1.5rem; }
+    .kicker {
+      display: inline-flex; align-items: center; gap: .5rem;
+      font-family: var(--mono); font-size: .78rem; letter-spacing: .06em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 1rem;
+    }
+    .kicker i {
+      width: .55rem; height: .55rem; border-radius: 50%;
+      background: var(--accent); display: inline-block;
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent);
+    }
+    h1 {
+      font-family: var(--serif); font-weight: 700; letter-spacing: -.02em;
+      font-size: clamp(2.1rem, 4.4vw, 3.4rem); line-height: 1.12;
+      margin: 0 0 1rem; max-width: 16ch;
+    }
+    .lede {
+      font-size: 1.15rem; color: var(--ink-soft); max-width: 62ch; margin: 0 0 1.5rem;
+    }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: .7rem; margin-bottom: 1.75rem; }
+    .stat-row {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: .75rem;
+    }
+    @media (max-width: 860px) { .stat-row { grid-template-columns: 1fr 1fr; } }
+    .stat {
+      background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius);
+      padding: .9rem 1rem; box-shadow: var(--shadow);
+    }
+    .stat b {
+      display: block; font-family: var(--serif); font-size: 1.35rem; line-height: 1.2;
+      margin-bottom: .2rem;
+    }
+    .stat span { color: var(--muted); font-size: .86rem; }
+
+    /* Missing banner */
+    .missing-banner {
+      margin: 1.25rem 0 0;
+      background: linear-gradient(135deg, #2a3348, #1d2638);
+      color: #f4f0e6; border-radius: 14px; padding: 1.25rem 1.35rem;
+      box-shadow: var(--shadow);
+    }
+    .missing-banner h2 {
+      font-family: var(--serif); font-size: 1.25rem; margin: 0 0 .4rem; color: #fff;
+    }
+    .missing-banner p { margin: 0 0 .9rem; color: #d7d0c2; max-width: 70ch; }
+    .missing-grid {
+      display: grid; grid-template-columns: 1.4fr 1fr; gap: 1rem;
+    }
+    @media (max-width: 800px) { .missing-grid { grid-template-columns: 1fr; } }
+    .missing-list { list-style: none; padding: 0; margin: 0; display: grid; gap: .45rem; }
+    .missing-list li {
+      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+      border-radius: 8px; padding: .55rem .7rem; font-size: .92rem;
+    }
+    .missing-list strong { color: #fff; }
+    .priority {
+      font-family: var(--mono); font-size: .68rem; letter-spacing: .05em;
+      text-transform: uppercase; padding: .15rem .4rem; border-radius: 4px;
+      margin-right: .4rem; vertical-align: .05em;
+    }
+    .p-high { background: #c45c3a; color: #fff; }
+    .p-med { background: #c9a227; color: #1a1814; }
+    .tip-box {
+      background: rgba(255,255,255,.08); border: 1px dashed rgba(255,255,255,.22);
+      border-radius: 10px; padding: 1rem;
+    }
+    .tip-box h3 { margin: 0 0 .4rem; font-size: 1rem; color: #fff; font-family: var(--serif); }
+    .tip-box p { margin: 0 0 .75rem; font-size: .9rem; color: #d7d0c2; }
+    .tip-box .btn-primary { background: #e8c17a; color: #1a1814; }
+    .tip-box .btn-primary:hover { background: #f0d39a; color: #1a1814; }
+    .tip-note { font-family: var(--mono); font-size: .72rem; color: #b8b0a0; margin-top: .65rem; }
+
+    /* Sections */
+    section { padding: 2.5rem 0; }
+    section h2 {
+      font-family: var(--serif); font-size: clamp(1.55rem, 2.4vw, 2rem);
+      margin: 0 0 .35rem; letter-spacing: -.015em;
+    }
+    .section-sub { color: var(--muted); margin: 0 0 1.25rem; max-width: 65ch; }
+    .card {
+      background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius);
+      padding: 1.15rem 1.25rem; box-shadow: var(--shadow);
+    }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 800px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    .layer {
+      display: inline-block; font-family: var(--mono); font-size: .68rem;
+      letter-spacing: .05em; text-transform: uppercase; padding: .18rem .45rem;
+      border-radius: 4px; margin-right: .35rem;
+    }
+    .l-ministry { background: var(--warn-soft); color: var(--warn); }
+    .l-court { background: var(--gap-soft); color: var(--gap); }
+    .l-ro { background: var(--ok-soft); color: var(--ok); }
+    .l-gap { background: #f0e4e4; color: var(--accent); }
+    .l-statute { background: #ece8f5; color: #4b3f78; }
+
+    /* Timeline */
+    .timeline { position: relative; padding-left: 1.25rem; }
+    .timeline::before {
+      content: ""; position: absolute; left: .35rem; top: .2rem; bottom: .2rem;
+      width: 2px; background: var(--line);
+    }
+    .t-item { position: relative; padding: 0 0 1.15rem 1rem; }
+    .t-item::before {
+      content: ""; position: absolute; left: -.98rem; top: .4rem;
+      width: .65rem; height: .65rem; border-radius: 50%;
+      background: var(--paper); border: 2px solid var(--accent);
+    }
+    .t-date {
+      font-family: var(--mono); font-size: .78rem; color: var(--muted);
+      letter-spacing: .03em; margin-bottom: .15rem;
+    }
+    .t-title { font-weight: 600; margin-bottom: .2rem; }
+    .t-src { font-size: .84rem; color: var(--muted); }
+
+    /* Violations */
+    .v-grid { display: grid; gap: .7rem; }
+    .v-card {
+      display: grid; grid-template-columns: auto 1fr auto; gap: .85rem; align-items: start;
+      background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius);
+      padding: .95rem 1.05rem; box-shadow: var(--shadow);
+    }
+    @media (max-width: 700px) {
+      .v-card { grid-template-columns: auto 1fr; }
+      .v-pin { grid-column: 1 / -1; }
+    }
+    .v-num {
+      font-family: var(--mono); font-weight: 500; color: var(--accent);
+      background: var(--accent-soft); border-radius: 8px; padding: .35rem .5rem;
+      min-width: 2.4rem; text-align: center;
+    }
+    .v-card h3 { margin: 0 0 .25rem; font-size: 1.02rem; font-family: var(--serif); }
+    .v-card p { margin: 0; color: var(--ink-soft); font-size: .94rem; }
+    .v-pin {
+      font-family: var(--mono); font-size: .75rem; color: var(--gap);
+      background: var(--gap-soft); border-radius: 6px; padding: .35rem .5rem;
+      white-space: nowrap; align-self: center;
+    }
+
+    /* Callouts */
+    .note {
+      border-left: 3px solid var(--line); padding: .2rem 0 .2rem 1rem; margin: 1rem 0;
+      color: var(--ink-soft);
+    }
+    .note.important { border-color: var(--accent); background: color-mix(in srgb, var(--accent-soft) 55%, transparent); padding: .85rem 1rem; border-radius: 0 var(--radius) var(--radius) 0; }
+    .note.gap { border-color: var(--gap); background: color-mix(in srgb, var(--gap-soft) 70%, transparent); padding: .85rem 1rem; border-radius: 0 var(--radius) var(--radius) 0; }
+
+    /* Money */
+    .money-table { width: 100%; border-collapse: collapse; font-size: .94rem; }
+    .money-table th, .money-table td {
+      text-align: left; padding: .65rem .5rem; border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+    .money-table th { font-family: var(--mono); font-size: .72rem; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+    .money-table td:last-child, .money-table th:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+
+    /* Submit form */
+    .submit-panel {
+      display: grid; grid-template-columns: 1.1fr .9fr; gap: 1rem;
+    }
+    @media (max-width: 860px) { .submit-panel { grid-template-columns: 1fr; } }
+    label { display: block; font-weight: 600; font-size: .9rem; margin: 0 0 .3rem; }
+    input, select, textarea {
+      width: 100%; border: 1px solid var(--line); border-radius: 8px;
+      padding: .7rem .8rem; font: inherit; background: #fff; color: var(--ink);
+      margin-bottom: .85rem;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: 2px solid color-mix(in srgb, var(--accent) 35%, transparent);
+      border-color: color-mix(in srgb, var(--accent) 50%, var(--line));
+    }
+    textarea { min-height: 8rem; resize: vertical; }
+    .form-hint { font-size: .84rem; color: var(--muted); margin: -.5rem 0 .85rem; }
+    .secure-list { margin: 0; padding-left: 1.1rem; color: var(--ink-soft); }
+    .secure-list li { margin-bottom: .45rem; }
+
+    /* Sources */
+    .source-list { list-style: none; padding: 0; margin: 0; display: grid; gap: .45rem; }
+    .source-list li {
+      background: var(--paper); border: 1px solid var(--line); border-radius: 8px;
+      padding: .7rem .85rem; font-size: .92rem;
+    }
+    .source-list code {
+      font-family: var(--mono); font-size: .78rem; color: var(--muted);
+    }
+
+    footer {
+      border-top: 1px solid var(--line); padding: 2rem 0 3rem; color: var(--muted); font-size: .9rem;
+    }
+    footer .wrap { display: grid; gap: .75rem; }
+    .legal {
+      max-width: 75ch; line-height: 1.5;
+    }
+
+    .tag-row { display: flex; flex-wrap: wrap; gap: .4rem; margin: .75rem 0 0; }
+    .chip {
+      font-family: var(--mono); font-size: .72rem; letter-spacing: .03em;
+      border: 1px solid var(--line); border-radius: 999px; padding: .25rem .55rem;
+      color: var(--muted); background: color-mix(in srgb, var(--paper) 70%, transparent);
+    }
+
+    .toc {
+      display: flex; flex-wrap: wrap; gap: .5rem; margin: 1.5rem 0 0;
+    }
+    .toc a {
+      text-decoration: none; color: var(--ink-soft); background: var(--paper);
+      border: 1px solid var(--line); border-radius: 999px; padding: .4rem .75rem;
+      font-size: .86rem; font-weight: 500;
+    }
+    .toc a:hover { border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); color: var(--accent); }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="#top">
+        <strong>PBFC Public Record</strong>
+        <span>Court file 2501-02733 · Alberta</span>
+      </a>
+      <nav aria-label="Primary">
+        <a href="#story">Story</a>
+        <a href="#timeline">Timeline</a>
+        <a href="#findings">Findings</a>
+        <a href="#costs">Costs</a>
+        <a href="#missing">Missing</a>
+        <a href="#submit" class="btn btn-primary" style="padding:.45rem .9rem">Submit a document</a>
+      </nav>
+    </div>
+  </div>
+
+  <header class="hero wrap" id="top">
+    <div class="kicker"><i></i> Public-interest archive · Citation first · Tips welcome</div>
+    <h1>The public record of Picture Butte Feeder Cooperative</h1>
+    <p class="lede">
+      Alberta’s largest feeder association under the provincial loan-guarantee program was frozen by Minister’s Order, put under a court-appointed Restructuring Officer, then rebuilt. This site reconstructs that arc from <strong>court filings and statutes</strong> — and marks every blank we still cannot fill without primary documents.
+    </p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#submit">I have a missing document</a>
+      <a class="btn btn-ghost" href="#findings">Read the Order findings</a>
+      <a class="btn btn-ghost" href="#method">How this is built</a>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat"><b>~$281M</b><span>Member loans (Jan 31, 2025)</span></div>
+      <div class="stat"><b>$335M</b><span>Bank facility maximum</span></div>
+      <div class="stat"><b>10</b><span>Order finding categories</span></div>
+      <div class="stat"><b>1 report</b><span>Still missing from public set</span></div>
+    </div>
+
+    <div class="missing-banner" id="missing-banner">
+      <div class="missing-grid">
+        <div>
+          <h2>We are missing the documents that would complete this record</h2>
+          <p>
+            The Minister’s Order appendix lists ten categories of noncompliance and “unsound practices.” The underlying
+            <strong>IIS Inspection Report (November 18, 2024)</strong> was later made part of the public court record when sealing was denied — but we do not have a copy. Same for full AGM materials from February 25, 2026.
+            If you have either, you can close the largest holes in this archive.
+          </p>
+          <ul class="missing-list">
+            <li><span class="priority p-high">Need</span> <strong>IIS Inspection Report</strong> — Nov 18, 2024 (full text / exhibits)</li>
+            <li><span class="priority p-high">Need</span> <strong>AGM package</strong> — Feb 25, 2026 (notice, minutes, slides, resolutions)</li>
+            <li><span class="priority p-med">Helpful</span> Compliance Memorandum / Action Items — Feb 13, 2025</li>
+            <li><span class="priority p-med">Helpful</span> Townhall decks, member notices not already filed</li>
+          </ul>
+        </div>
+        <div class="tip-box">
+          <h3>Tip line</h3>
+          <p>Anonymous or named. Documents preferred as PDF. We verify against court-file context before publishing.</p>
+          <a class="btn btn-primary" href="#submit">Submit securely →</a>
+          <div class="tip-note">Preferred: PDF · Court stamps help · No need to explain — the file can speak</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="toc" aria-label="On this page">
+      <a href="#story">1. Story</a>
+      <a href="#timeline">2. Timeline</a>
+      <a href="#findings">3. Findings</a>
+      <a href="#rebuild">4. Rebuild</a>
+      <a href="#costs">5. Costs &amp; AGM</a>
+      <a href="#missing">6. Missing pieces</a>
+      <a href="#submit">7. Submit</a>
+      <a href="#sources">8. Sources</a>
+    </div>
+  </header>
+
+  <main>
+    <section id="story">
+      <div class="wrap">
+        <h2>What happened</h2>
+        <p class="section-sub">Four layers of truth. We keep them separate on purpose.</p>
+
+        <div class="grid-2">
+          <div class="card">
+            <p style="margin:0 0 .75rem">
+              <span class="layer l-ministry">Ministry</span>
+              <span class="layer l-court">Court</span>
+              <span class="layer l-ro">RO reports</span>
+            </p>
+            <p style="margin:0 0 .75rem; color: var(--ink-soft)">
+              <strong>Picture Butte Feeder Cooperative (PBFC)</strong> is an Alberta cooperative that finances cattle for members through the Feeder Associations Loan Guarantee (FALG) program. A bank syndicate lends to PBFC; the Province guarantees a slice; members get purchase loans and equity advances against livestock.
+            </p>
+            <p style="margin:0; color: var(--ink-soft)">
+              After inspections from September 2023 to May 2024, the Ministry prepared a report dated November 18, 2024. On January 27/28, 2025, Minister RJ Sigurdson ordered a freeze on further guaranteed advances, citing noncompliance with FAGA/FAGR and “unsound” operations. The board, administrator, and supervisor exited. On February 21, 2025 the Court of King’s Bench appointed Alvarez &amp; Marsal as Restructuring Officer (Action <strong>2501-02733</strong>).
+            </p>
+          </div>
+          <div class="card">
+            <h3 style="font-family:var(--serif); margin:0 0 .5rem; font-size:1.15rem">Why this site exists</h3>
+            <p style="margin:0 0 .75rem; color: var(--ink-soft)">
+              Most of the story is already in public filings — if you know where to look. This archive compresses that paper into a navigable record with page-level citations, and treats <em>missing</em> documents as first-class objects rather than rumors.
+            </p>
+            <div class="note important" style="margin:0">
+              <strong>Epistemic rule:</strong> Ministry findings are opinions after inspection — not criminal convictions. Court orders approve process and fees. RO reports describe remediation. Contested claims stay labeled.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="timeline" style="background: color-mix(in srgb, var(--bg-deep) 70%, transparent)">
+      <div class="wrap">
+        <h2>Timeline</h2>
+        <p class="section-sub">High-signal dates only. Full master timeline lives in the research wiki.</p>
+        <div class="card">
+          <div class="timeline">
+            <div class="t-item">
+              <div class="t-date">2023-09-07 → 2024-05-15</div>
+              <div class="t-title">IIS inspections of PBFC</div>
+              <div class="t-src">Affidavit of Tony Ankermann · Originating Application</div>
+            </div>
+            <div class="t-item">
+              <div class="t-date">2024-11-18 · <span class="layer l-gap">MISSING DOC</span></div>
+              <div class="t-title">IIS Inspection Report completed</div>
+              <div class="t-src">Cited everywhere; full text not in this archive yet</div>
+            </div>
+            <div class="t-item">
+              <div class="t-date">2025-01-27 / 28</div>
+              <div class="t-title">Minister’s Order freezes further guaranteed advances</div>
+              <div class="t-src">Affidavit Exhibit A · FAGA s.6</div>
+            </div>
+            <div class="t-item">
+              <div class="t-date">2025-02-21</div>
+              <div class="t-title">A&amp;M appointed Restructuring Officer</div>
+              <div class="t-src">Restructuring Officer Order · Court file 2501-02733</div>
+            </div>
+            <div class="t-item">
+              <div class="t-date">2025-03-03 → 07</div>
+              <div class="t-title">Cattle inventory audit — 52 sites</div>
+              <div class="t-src">RO First Report · Member Update Mar 17, 2025</div>
+            </div>
+            <div class="t-item">
+              <div class="t-date">2025-03-18</div>
+              <div class="t-title">Sealing of Inspection Report denied — report public</div>
+              <div class="t-src">Picture Butte Feeder Cooperative (Re), 2025 ABKB 162 · RO First Report</div>
+            </div>
+            <div class="t-item">
+              <div class="t-date">2025-05-01</div>
+              <div class="t-title">Ministerial Order rescinded</div>
+              <div class="t-src">RO First Report · Member Update May 22, 2025</div>
+            </div>
+            <div class="t-item">
+              <div class="t-date">2025-05-26</div>
+              <div class="t-title">New loans resume under requalification rules</div>
+              <div class="t-src">RO First Report · Member updates</div>
+            </div>
+            <div class="t-item">
+              <div class="t-date">2025-06-30 / 2025-09-17</div>
+              <div class="t-title">Court approves RO conduct, fees, amended bylaws &amp; policies</div>
+              <div class="t-src">Approval Order · King’s Bench Order (filed Sept 24)</div>
+            </div>
+            <div class="t-item">
+              <div class="t-date">2025-12-01</div>
+              <div class="t-title">Special General Meeting — new 7-director board elected</div>
+              <div class="t-src">RO Third Report</div>
+            </div>
+            <div class="t-item">
+              <div class="t-date">2026-02-25 · <span class="layer l-gap">PARTIAL</span></div>
+              <div class="t-title">AGM — audited FY2025 statements presented; auditor reappointed</div>
+              <div class="t-src">RO Third Report describes agenda; full package not held here</div>
+            </div>
+            <div class="t-item">
+              <div class="t-date">2026-04-23</div>
+              <div class="t-title">Ministry: inspections satisfactory; operating “in a sound manner”</div>
+              <div class="t-src">RO Third Report</div>
+            </div>
+            <div class="t-item">
+              <div class="t-date">2026-04-27</div>
+              <div class="t-title">Third Report — RO seeks discharge</div>
+              <div class="t-src">RO Third Report</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="findings">
+      <div class="wrap">
+        <h2>The Order findings (V1–V10)</h2>
+        <p class="section-sub">
+          Source: Appendix to the Minister’s Order, reproduced as Exhibit “A” to the Affidavit of Tony Ankermann (sworn February 18, 2025). These are the Minister’s opinions after reviewing the Inspection Report.
+        </p>
+
+        <div class="note gap">
+          <strong>Blank in the middle:</strong> the detailed facts behind each bullet live primarily in the Nov 18, 2024 Inspection Report — the document this site is designed to attract. Until it arrives, we pin each finding to the statute and quote the Order appendix only.
+        </div>
+
+        <div class="v-grid" style="margin-top:1rem">
+          <article class="v-card">
+            <div class="v-num">V1</div>
+            <div>
+              <h3>Ineligible feeder members</h3>
+              <p>Accepted members who did not meet land/farming requirements; memberships not primarily for growing/finishing livestock.</p>
+            </div>
+            <div class="v-pin">FAGR s.11</div>
+          </article>
+          <article class="v-card">
+            <div class="v-num">V2</div>
+            <div>
+              <h3>Improper use of guaranteed loan proceeds</h3>
+              <p>Proceeds used outside allowed purposes — including transactions for members who had withdrawn.</p>
+            </div>
+            <div class="v-pin">FAGA s.4 · FAGR s.13</div>
+          </article>
+          <article class="v-card">
+            <div class="v-num">V3</div>
+            <div>
+              <h3>Supplying livestock / advances despite contravention</h3>
+              <p>Order frames ineligibility; statute text also covers default, supervision, and Provincial Supervisor orders.</p>
+            </div>
+            <div class="v-pin">FAGR s.14(3)</div>
+          </article>
+          <article class="v-card">
+            <div class="v-num">V4</div>
+            <div>
+              <h3>Advances above allowed equity percentage</h3>
+              <p>Advances exceeding 50% of the difference between purchase price and fair market value (subject to insurance/forward-contract exceptions).</p>
+            </div>
+            <div class="v-pin">FAGR s.30(2)</div>
+          </article>
+          <article class="v-card">
+            <div class="v-num">V5</div>
+            <div>
+              <h3>Exceeding total monetary obligation caps</h3>
+              <p>Livestock supplied above prescribed member limits (generally $3M excluding advances).</p>
+            </div>
+            <div class="v-pin">FAGR s.31(1)</div>
+          </article>
+          <article class="v-card">
+            <div class="v-num">V6</div>
+            <div>
+              <h3>Security deposits not properly collected</h3>
+              <p>Failed to collect the required ≥5% security deposits from certain members.</p>
+            </div>
+            <div class="v-pin">FAGR s.33</div>
+          </article>
+          <article class="v-card">
+            <div class="v-num">V7</div>
+            <div>
+              <h3>Obstructing inspections</h3>
+              <p>Staff refused interviews; NDAs; Chairman Schooten interference with a witness interview; unanswered questions about amended board minutes.</p>
+            </div>
+            <div class="v-pin">FAGA s.9(3)</div>
+          </article>
+          <article class="v-card">
+            <div class="v-num">V8</div>
+            <div>
+              <h3>Inadequate sales documents</h3>
+              <p>Missing purchaser names, prices, and failure to provide records on request.</p>
+            </div>
+            <div class="v-pin">FAGR s.17</div>
+          </article>
+          <article class="v-card">
+            <div class="v-num">V9</div>
+            <div>
+              <h3>Unsound practices — administration</h3>
+              <p>POAs, irregular documents/signatures, equity advances used to fund deposits, processing withdrawn members, weak minutes and financial records.</p>
+            </div>
+            <div class="v-pin">FAGA s.6(1)(b)</div>
+          </article>
+          <article class="v-card">
+            <div class="v-num">V10</div>
+            <div>
+              <h3>Unsound practices — board</h3>
+              <p>Eligibility failures, related transactions, conflicts of interest, excessive board compensation/expenses, AGM not held timely.</p>
+            </div>
+            <div class="v-pin">FAGA s.6(1)(b)</div>
+          </article>
+        </div>
+
+        <p class="note" style="margin-top:1.25rem">
+          Ankermann’s affidavit notes that certain findings were “the subject of significant dispute by certain parties.” Sealing of the Confidential Affidavit was sought; Justice Mah denied sealing (2025 ABKB 162).
+        </p>
+      </div>
+    </section>
+
+    <section id="rebuild" style="background: color-mix(in srgb, var(--bg-deep) 70%, transparent)">
+      <div class="wrap">
+        <h2>Rebuild under the Restructuring Officer</h2>
+        <p class="section-sub">After the freeze: inventory, credit docs, new staff, new bylaws, new board — then a Ministry “sound manner” letter.</p>
+        <div class="grid-2">
+          <div class="card">
+            <h3 style="margin:0 0 .5rem; font-family:var(--serif); font-size:1.1rem">What the RO says was fixed</h3>
+            <ul style="margin:0; padding-left:1.15rem; color:var(--ink-soft)">
+              <li>Cattle audit reconciled inventory (Mar 2025)</li>
+              <li>Order rescinded May 1, 2025; loans May 26</li>
+              <li>New Supervisor / Administrator hired</li>
+              <li>Amended bylaws &amp; policies Court-approved Sept 2025 (conflicts, volunteer board, no equity-funded deposits)</li>
+              <li>Board election Dec 1, 2025; AGM Feb 25, 2026</li>
+              <li>MNP unqualified FY2025 audit (Jan 19, 2026)</li>
+              <li>Ministry Apr 23, 2026: operating in a sound manner</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3 style="margin:0 0 .5rem; font-family:var(--serif); font-size:1.1rem">What remediation is not</h3>
+            <p style="margin:0; color:var(--ink-soft)">
+              Later compliance and a clean audit do not automatically mean the historical findings were false, overstated, or fully tested in public. Without the Inspection Report, readers cannot see the underlying transaction samples, member files, or interview records the Ministry relied on. That is the deliberate hole this site leaves open — and invites the public to close.
+            </p>
+            <div class="tag-row">
+              <span class="chip">Remediation ≠ acquittal</span>
+              <span class="chip">Court ≠ AGM</span>
+              <span class="chip">Opinion ≠ conviction</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="costs">
+      <div class="wrap">
+        <h2>Costs, fees, and the AGM claim</h2>
+        <p class="section-sub">People sometimes say “the AGM validated all the costs.” The filings support a more careful sentence.</p>
+
+        <div class="grid-2" style="margin-bottom:1rem">
+          <div class="card">
+            <h3 style="margin:0 0 .5rem; font-family:var(--serif); font-size:1.1rem">What the AGM did (Feb 25, 2026)</h3>
+            <p style="margin:0; color:var(--ink-soft)">
+              Per the RO Third Report: presented FY2025 audited financial statements, operational/RO updates, appointed MNP for FY2026. Attendance was limited (21 registered members / 12.7%). It is <strong>not</strong> described as a forensic clearance of V1–V10 or a ratification that pre-crisis practices were proper.
+            </p>
+          </div>
+          <div class="card">
+            <h3 style="margin:0 0 .5rem; font-family:var(--serif); font-size:1.1rem">What the Court did</h3>
+            <p style="margin:0; color:var(--ink-soft)">
+              Court orders approved Restructuring Officer conduct and professional fees in stages (June 30 and Sept 17, 2025 hearings; further fees sought April 2026). That is taxation of restructuring work — not a blessing of the original Ministry findings.
+            </p>
+          </div>
+        </div>
+
+        <div class="card">
+          <table class="money-table">
+            <thead>
+              <tr>
+                <th>Period</th>
+                <th>What</th>
+                <th>Amount (ex GST)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>First Report interim</td>
+                <td>A&amp;M + Torys + Cassels (Court-approved)</td>
+                <td>~$1.70M</td>
+              </tr>
+              <tr>
+                <td>Second Report</td>
+                <td>Fees approved by Court; line totals still being digitized</td>
+                <td>See Appendix I</td>
+              </tr>
+              <tr>
+                <td>Third Report + forecast</td>
+                <td>Final taxation sought + completion estimate</td>
+                <td>~$1.20M</td>
+              </tr>
+              <tr>
+                <td>Pre-crisis context</td>
+                <td>Former supervisor + admin compensation (FY23 / FY24)</td>
+                <td>~$1.6M / ~$1.3M</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="form-hint" style="margin:.75rem 0 0">Sources: RO First Report pp.20–21, 28–29; RO Third Report pp.27–28; Approval Orders.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="missing" style="background: color-mix(in srgb, var(--bg-deep) 70%, transparent)">
+      <div class="wrap">
+        <h2>Missing pieces (the tip targets)</h2>
+        <p class="section-sub">If this site does its job, someone who has these files will recognize the gap and send them.</p>
+
+        <div class="v-grid">
+          <article class="v-card">
+            <div class="v-num" style="background:#2a3348;color:#fff">01</div>
+            <div>
+              <h3>IIS Inspection Report — Nov 18, 2024</h3>
+              <p>The factual engine behind the Order. Unsealed per 2025 ABKB 162. Highest priority. PDF with exhibits preferred.</p>
+            </div>
+            <div class="v-pin">CRITICAL</div>
+          </article>
+          <article class="v-card">
+            <div class="v-num" style="background:#2a3348;color:#fff">02</div>
+            <div>
+              <h3>AGM package — Feb 25, 2026</h3>
+              <p>Notice, agenda, minutes, financial presentation, resolutions, attendance. Lets us verify what members actually voted on.</p>
+            </div>
+            <div class="v-pin">CRITICAL</div>
+          </article>
+          <article class="v-card">
+            <div class="v-num" style="background:#2a3348;color:#fff">03</div>
+            <div>
+              <h3>Compliance Memorandum / Action Items — Feb 13, 2025</h3>
+              <p>FAA/Ministry checklist for lifting the Order. Referenced in the affidavit as sealed-then-public material.</p>
+            </div>
+            <div class="v-pin">HIGH</div>
+          </article>
+          <article class="v-card">
+            <div class="v-num" style="background:#2a3348;color:#fff">04</div>
+            <div>
+              <h3>Townhall materials &amp; member notices</h3>
+              <p>Anything not already posted on the RO website that shows what ordinary members were told.</p>
+            </div>
+            <div class="v-pin">MEDIUM</div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="submit">
+      <div class="wrap">
+        <h2>Submit a document</h2>
+        <p class="section-sub">Help complete the public record. You can stay anonymous. We will not publish tips that cannot be grounded.</p>
+
+        <div class="submit-panel">
+          <div class="card">
+            <form id="tip-form">
+              <label for="doc-type">What are you sending?</label>
+              <select id="doc-type" name="doc-type" required>
+                <option value="inspection-report">IIS Inspection Report (Nov 18, 2024)</option>
+                <option value="agm">AGM package (Feb 25, 2026)</option>
+                <option value="compliance-memo">Compliance Memorandum / Action Items</option>
+                <option value="member-notice">Member notice / townhall materials</option>
+                <option value="other">Other primary document</option>
+              </select>
+
+              <label for="how-got">How did you obtain it? (optional)</label>
+              <input id="how-got" name="how-got" placeholder="e.g. court file, member mailing, FOIP, personal archive" />
+
+              <label for="notes">Notes for the archive (optional)</label>
+              <textarea id="notes" name="notes" placeholder="Page ranges, whether exhibits included, any authenticity marks..."></textarea>
+
+              <label for="contact">Contact if you want a reply (optional)</label>
+              <input id="contact" name="contact" type="email" placeholder="you@example.com — leave blank to stay anonymous" />
+              <p class="form-hint">Anonymous tips are fine. If you leave contact info, it is only for follow-up about the document.</p>
+
+              <button type="submit" class="btn btn-primary" style="width:100%">Open email draft with checklist</button>
+              <p class="form-hint" style="margin-top:.75rem">
+                This form does not upload files to a server. It opens your email client with a structured message.
+                Attach the PDF there, or use the secure channels listed beside this form.
+              </p>
+            </form>
+          </div>
+
+          <div class="card">
+            <h3 style="margin:0 0 .6rem; font-family:var(--serif); font-size:1.1rem">How to tip</h3>
+            <ol class="secure-list">
+              <li><strong>Email + PDF attachment</strong> — use the button; attach the file in your mail client.</li>
+              <li><strong>Link to a cloud file</strong> — share a view-only link in the email body.</li>
+              <li><strong>Physical drop</strong> — contact first if you need offline handoff instructions.</li>
+              <li><strong>Whistleblower caution</strong> — if disclosure could put you at legal risk, speak to counsel first. This site is not legal advice.</li>
+            </ol>
+            <div class="note important" style="margin-top:1rem">
+              <strong>Publishing rule:</strong> submissions are reviewed against existing court-file context. We publish documents, not anonymous character claims. Prefer original PDFs with court stamps, exhibit tabs, or Ministry letterhead.
+            </div>
+            <p style="margin:1rem 0 0; font-family:var(--mono); font-size:.8rem; color:var(--muted)">
+              Tip address configured in page script · update before deploy
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="method" style="background: color-mix(in srgb, var(--bg-deep) 70%, transparent)">
+      <div class="wrap">
+        <h2>Method</h2>
+        <div class="grid-2">
+          <div class="card">
+            <h3 style="margin:0 0 .5rem; font-family:var(--serif); font-size:1.1rem">What goes on the record</h3>
+            <ul style="margin:0; padding-left:1.15rem; color:var(--ink-soft)">
+              <li>Court filings in ABKB 2501-02733</li>
+              <li>Minister’s Order appendix (via Ankermann affidavit)</li>
+              <li>Restructuring Officer reports I–III</li>
+              <li>FAGA / FAGR statutory text</li>
+              <li>Member updates issued by the RO</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3 style="margin:0 0 .5rem; font-family:var(--serif); font-size:1.1rem">What does not</h3>
+            <ul style="margin:0; padding-left:1.15rem; color:var(--ink-soft)">
+              <li>Unsourced social media claims as primary fact</li>
+              <li>Collapsing “Ministry alleges” into “proven”</li>
+              <li>Treating Court fee approval as historical clearance</li>
+              <li>Publishing tips that cannot be document-grounded</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="sources">
+      <div class="wrap">
+        <h2>Core sources used on this page</h2>
+        <p class="section-sub">Research extracts with page markers are maintained offline. Public readers should verify against originals where possible.</p>
+        <ul class="source-list">
+          <li>Originating Application — Picture Butte Feeder Cooperative · filed Feb 19, 2025 · <code>2501-02733</code></li>
+          <li>Affidavit of Tony Ankermann · sworn Feb 18, 2025 · Exhibit A (Minister’s Order + appendix)</li>
+          <li>First Report of the Restructuring Officer · June 24, 2025</li>
+          <li>Second Report of the Restructuring Officer · Sept 8, 2025</li>
+          <li>Third Report of the Restructuring Officer · April 27, 2026</li>
+          <li>Approval Order · June 30, 2025 hearing / filed July 7, 2025</li>
+          <li>Order approving bylaws, policies, auditor, fees · Sept 17, 2025 / filed Sept 24, 2025</li>
+          <li>Feeder Associations Guarantee Act, SA 2009, c F-11.1</li>
+          <li>Feeder Associations Guarantee Regulation, Alta Reg 13/2012</li>
+          <li>Picture Butte Feeder Cooperative (Re), 2025 ABKB 162 (sealing denied)</li>
+          <li>RO member letters: Feb 27, Mar 17, May 22, June 12, 2025</li>
+        </ul>
+        <p style="margin:1rem 0 0; color:var(--muted); font-size:.92rem">
+          RO materials were also posted historically at
+          <a href="https://www.alvarezandmarsal.com/picturebutte" rel="noopener noreferrer">alvarezandmarsal.com/picturebutte</a>
+          (availability may vary).
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <strong style="color:var(--ink); font-family:var(--serif)">PBFC Public Record</strong>
+      <p class="legal">
+        This is an independent public-interest archive compiled from court and statutory materials.
+        It is not affiliated with Picture Butte Feeder Cooperative, Alvarez &amp; Marsal, the Government of Alberta, or any party’s counsel.
+        Nothing here is legal advice. Findings attributed to the Ministry remain opinions under FAGA s.6 unless and until a court determines otherwise.
+        If you believe a citation is wrong, send a correction with the document page.
+      </p>
+      <p>Built to make missing primary sources visible — and gettable.</p>
+    </div>
+  </footer>
+
+  <script>
+    // === CONFIGURE BEFORE PUBLIC DEPLOY ===
+    const TIP_EMAIL = "buperac@gmail.com";
+    const SITE_NAME = "PBFC Public Record";
+
+    const form = document.getElementById("tip-form");
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const type = document.getElementById("doc-type").value;
+      const how = document.getElementById("how-got").value.trim();
+      const notes = document.getElementById("notes").value.trim();
+      const contact = document.getElementById("contact").value.trim();
+
+      const typeLabel = document.getElementById("doc-type").selectedOptions[0].text;
+      const subject = encodeURIComponent(`[${SITE_NAME}] Document tip: ${typeLabel}`);
+      const body = encodeURIComponent(
+        [
+          `Document type: ${typeLabel}`,
+          `Internal code: ${type}`,
+          "",
+          "How obtained:",
+          how || "(not provided)",
+          "",
+          "Notes:",
+          notes || "(none)",
+          "",
+          "Contact for follow-up:",
+          contact || "(anonymous)",
+          "",
+          "—",
+          "Please attach the PDF (or paste a view-only link) before sending.",
+          "Prefer original scans with letterhead, court stamps, or exhibit tabs.",
+          "",
+          "I understand submissions may be reviewed for authenticity and published as part of a public archive."
+        ].join("\n")
+      );
+
+      window.location.href = `mailto:${TIP_EMAIL}?subject=${subject}&body=${body}`;
+    });
+  </script>
+</body>
+</html>
