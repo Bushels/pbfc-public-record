@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Spot the Legal One — PBFC Abuse Academy</title>
+  <meta name="description" content="Interactive story of Picture Butte Feeder Cooperative: learn the rules, spot the legal practice among two alleged abuses, then track remediation." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #121410;
+      --bg2: #1a1c16;
+      --panel: #22251c;
+      --panel2: #2a2e23;
+      --ink: #f2efe4;
+      --muted: #a39c88;
+      --line: #3a3f32;
+      --dirt: #c45c3a;
+      --dirt-soft: #3a221c;
+      --legal: #6fbf8a;
+      --legal-soft: #1c3326;
+      --gold: #e0b45a;
+      --gold-soft: #3a3018;
+      --accent: #d4a574;
+      --serif: "Source Serif 4", Georgia, serif;
+      --sans: "Source Sans 3", system-ui, sans-serif;
+      --mono: "IBM Plex Mono", ui-monospace, monospace;
+      --radius: 14px;
+      --shadow: 0 20px 50px rgba(0,0,0,.35);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; min-height: 100vh; color: var(--ink);
+      font-family: var(--sans); font-size: 17px; line-height: 1.5;
+      background:
+        radial-gradient(900px 500px at 10% -10%, #2a2618 0%, transparent 55%),
+        radial-gradient(700px 400px at 100% 0%, #1e2a20 0%, transparent 45%),
+        var(--bg);
+    }
+    a { color: var(--accent); }
+    .wrap { width: min(52rem, calc(100% - 1.5rem)); margin-inline: auto; }
+    .top {
+      position: sticky; top: 0; z-index: 20;
+      backdrop-filter: blur(12px);
+      background: color-mix(in srgb, var(--bg) 88%, transparent);
+      border-bottom: 1px solid var(--line);
+    }
+    .top-inner {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: .75rem; padding: .7rem 0; flex-wrap: wrap;
+    }
+    .brand { text-decoration: none; color: inherit; }
+    .brand strong { font-family: var(--serif); display: block; font-size: 1rem; }
+    .brand span { font-family: var(--mono); font-size: .68rem; color: var(--muted); letter-spacing: .05em; text-transform: uppercase; }
+    .nav { display: flex; gap: .6rem; align-items: center; flex-wrap: wrap; }
+    .nav a { color: var(--muted); text-decoration: none; font-size: .9rem; }
+    .nav a:hover { color: var(--ink); }
+    .pill {
+      font-family: var(--mono); font-size: .72rem; letter-spacing: .04em;
+      border: 1px solid var(--line); border-radius: 999px; padding: .3rem .65rem; color: var(--muted);
+    }
+    .screen { display: none; padding: 1.75rem 0 3.5rem; }
+    .screen.active { display: block; animation: in .28s ease; }
+    @keyframes in { from { opacity: 0; transform: translateY(8px);} to { opacity: 1; transform: none; } }
+
+    h1 { font-family: var(--serif); font-size: clamp(1.9rem, 4vw, 2.7rem); line-height: 1.12; margin: 0 0 .8rem; letter-spacing: -.02em; }
+    h2 { font-family: var(--serif); font-size: clamp(1.4rem, 2.5vw, 1.85rem); margin: 0 0 .5rem; }
+    h3 { font-family: var(--serif); margin: 0 0 .4rem; font-size: 1.15rem; }
+    .lede { color: var(--muted); font-size: 1.05rem; max-width: 48ch; margin: 0 0 1.25rem; }
+    .panel {
+      background: linear-gradient(180deg, var(--panel), var(--bg2));
+      border: 1px solid var(--line); border-radius: var(--radius);
+      padding: 1.15rem 1.2rem; box-shadow: var(--shadow);
+    }
+    .stack { display: grid; gap: .85rem; }
+    .row { display: flex; gap: .7rem; flex-wrap: wrap; align-items: center; }
+    .btn {
+      appearance: none; border: 1px solid transparent; border-radius: 999px;
+      padding: .72rem 1.15rem; font: 600 .95rem var(--sans); cursor: pointer;
+      transition: .15s ease; text-decoration: none; display: inline-flex; align-items: center; gap: .4rem;
+    }
+    .btn-primary { background: var(--gold); color: #1a1508; }
+    .btn-primary:hover { filter: brightness(1.05); }
+    .btn-ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+    .btn-ghost:hover { background: var(--panel2); }
+    .btn:disabled { opacity: .45; cursor: not-allowed; }
+
+    .progress {
+      height: 8px; background: var(--panel2); border-radius: 999px; overflow: hidden;
+      border: 1px solid var(--line); margin: .5rem 0 1rem;
+    }
+    .progress > i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #8f6a2a, var(--gold)); transition: width .3s ease; }
+
+    .choice {
+      width: 100%; text-align: left; cursor: pointer;
+      background: var(--panel2); border: 1px solid var(--line); border-radius: 12px;
+      padding: 1rem 1.05rem; color: inherit; font: inherit;
+      transition: border-color .15s, transform .12s, background .15s;
+    }
+    .choice:hover:not(:disabled) { border-color: #6a715c; transform: translateY(-1px); }
+    .choice .tag {
+      font-family: var(--mono); font-size: .68rem; letter-spacing: .05em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: .35rem;
+    }
+    .choice .text { font-size: 1rem; }
+    .choice.selected { border-color: var(--gold); box-shadow: 0 0 0 1px color-mix(in srgb, var(--gold) 40%, transparent); }
+    .choice.correct { border-color: var(--legal); background: var(--legal-soft); }
+    .choice.wrong { border-color: var(--dirt); background: var(--dirt-soft); }
+    .choice:disabled { cursor: default; }
+
+    .reveal {
+      display: none; margin-top: .25rem;
+      border-left: 3px solid var(--gold); padding: .85rem 1rem;
+      background: var(--gold-soft); border-radius: 0 10px 10px 0;
+    }
+    .reveal.show { display: block; }
+    .reveal .src {
+      font-family: var(--mono); font-size: .75rem; color: var(--muted); margin-top: .55rem;
+    }
+    .badge {
+      display: inline-block; font-family: var(--mono); font-size: .68rem; letter-spacing: .04em;
+      text-transform: uppercase; padding: .2rem .45rem; border-radius: 5px; margin-right: .35rem;
+    }
+    .b-legal { background: var(--legal-soft); color: var(--legal); border: 1px solid color-mix(in srgb, var(--legal) 40%, transparent); }
+    .b-dirt { background: var(--dirt-soft); color: #e08a6e; border: 1px solid color-mix(in srgb, var(--dirt) 40%, transparent); }
+    .b-ministry { background: #3a3018; color: var(--gold); border: 1px solid #6a5a2a; }
+    .b-unknown { background: #2a2e38; color: #9aa3b5; border: 1px solid #454c5c; }
+
+    .primer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+    @media (max-width: 700px) { .primer-grid { grid-template-columns: 1fr; } }
+    .primer-card {
+      background: var(--panel2); border: 1px solid var(--line); border-radius: 12px; padding: .9rem 1rem;
+    }
+    .primer-card strong { display: block; font-family: var(--serif); margin-bottom: .25rem; }
+
+    .scoreboard {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: .65rem; margin: 1rem 0;
+    }
+    @media (max-width: 600px) { .scoreboard { grid-template-columns: 1fr; } }
+    .stat {
+      background: var(--panel2); border: 1px solid var(--line); border-radius: 12px; padding: .85rem 1rem; text-align: center;
+    }
+    .stat b { display: block; font-family: var(--serif); font-size: 1.7rem; line-height: 1.1; }
+    .stat span { color: var(--muted); font-size: .85rem; }
+
+    table.score { width: 100%; border-collapse: collapse; font-size: .92rem; }
+    table.score th, table.score td {
+      text-align: left; padding: .65rem .45rem; border-bottom: 1px solid var(--line); vertical-align: top;
+    }
+    table.score th {
+      font-family: var(--mono); font-size: .7rem; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); font-weight: 500;
+    }
+    .note { color: var(--muted); font-size: .92rem; }
+    .footer-note {
+      margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--line);
+      color: var(--muted); font-size: .84rem;
+    }
+    .kicker {
+      font-family: var(--mono); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: .65rem;
+    }
+    .round-meta { display: flex; justify-content: space-between; gap: .75rem; flex-wrap: wrap; margin-bottom: .35rem; }
+    .feedback { min-height: 1.4em; font-weight: 600; margin: .35rem 0 .15rem; }
+    .feedback.ok { color: var(--legal); }
+    .feedback.bad { color: #e08a6e; }
+    .hint-bar {
+      background: var(--panel2); border: 1px dashed var(--line); border-radius: 10px;
+      padding: .7rem .9rem; color: var(--muted); font-size: .92rem; margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <div class="wrap top-inner">
+      <a class="brand" href="index.html">
+        <strong>PBFC Abuse Academy</strong>
+        <span>Spot the Legal One · Court-cited</span>
+      </a>
+      <div class="nav">
+        <a href="index.html">Public Record</a>
+        <a href="#scorecard" id="nav-scorecard" hidden>Scorecard</a>
+        <span class="pill" id="score-pill">Score 0/0</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTRO -->
+  <section class="screen active" id="screen-intro">
+    <div class="wrap stack">
+      <div class="kicker">Interactive briefing · Not a cartoon · Citations on every reveal</div>
+      <h1>Two dirt roads. One clean gate.</h1>
+      <p class="lede">
+        Picture Butte Feeder Cooperative financed cattle under a provincial guarantee.
+        The Ministry later listed ten categories of alleged abuse. Your job is not to memorize outrage —
+        it’s to still recognize <strong>the legal way</strong> when two dirty options sit beside it.
+      </p>
+      <div class="panel stack">
+        <h3>How to play</h3>
+        <p class="note" style="margin:0">
+          Each round shows <strong>three practices</strong>. Two track what the Minister’s Order appendix said went wrong.
+          One is how FAGA/FAGR says it should work. Pick the legal one. Then we show the statute and the Order quote.
+        </p>
+        <p class="note" style="margin:0">
+          After the rounds: a <strong>remediation scorecard</strong> you can fill when the AGM package arrives.
+          Until then, most boxes stay <em>Unverified</em> on purpose.
+        </p>
+        <div class="row">
+          <button class="btn btn-primary" id="btn-start">Start with the clean system</button>
+          <button class="btn btn-ghost" id="btn-skip-primer">Skip to the game</button>
+        </div>
+      </div>
+      <p class="footer-note">
+        Source spine: Minister’s Order appendix in Affidavit of Tony Ankermann (Feb 18, 2025); FAGA / FAGR text;
+        RO reports for later remediation claims. Ministry findings are opinions under FAGA s.6 — not criminal convictions.
+      </p>
+    </div>
+  </section>
+
+  <!-- PRIMER -->
+  <section class="screen" id="screen-primer">
+    <div class="wrap stack">
+      <div class="kicker">Act A · How a clean feeder association works</div>
+      <h2>The machine, before it breaks</h2>
+      <p class="lede">Thirty seconds of rules. You’ll need them when the dirt shows up.</p>
+      <div class="primer-grid">
+        <div class="primer-card">
+          <strong>1. Who can join</strong>
+          Members must actually farm on Alberta land they own or lease — not pure paper investors. Primary purpose: grow/finish livestock under the program.
+          <div class="src note" style="margin-top:.4rem">FAGR s.11</div>
+        </div>
+        <div class="primer-card">
+          <strong>2. What the money can buy</strong>
+          Guaranteed loan proceeds: livestock for members, allowed advances, approved projects, price insurance, related admin costs. Not free-form spending.
+          <div class="src note" style="margin-top:.4rem">FAGA s.4 · FAGR s.13</div>
+        </div>
+        <div class="primer-card">
+          <strong>3. Who owns the cattle</strong>
+          On a purchase loan, livestock stays association property (branded/tagged) until the member pays out. Sale proceeds go to the co-op first.
+          <div class="src note" style="margin-top:.4rem">Membership agreement pattern · Affidavit</div>
+        </div>
+        <div class="primer-card">
+          <strong>4. The 5% vault</strong>
+          Before supply or advance: collect ≥5% of total monetary obligation (ex interest) into a separate security deposit account.
+          <div class="src note" style="margin-top:.4rem">FAGR s.33</div>
+        </div>
+        <div class="primer-card">
+          <strong>5. Caps &amp; equity advances</strong>
+          Roughly $3M total monetary obligation caps (ex advances). Equity advances limited (often 50% of price-to-FMV gain unless insured/forward contracted).
+          <div class="src note" style="margin-top:.4rem">FAGR s.30 · s.31</div>
+        </div>
+        <div class="primer-card">
+          <strong>6. Paper &amp; inspections</strong>
+          Keep real sales documents. Don’t obstruct Ministry inspectors. Board holds meetings; conflicts and compensation stay under control.
+          <div class="src note" style="margin-top:.4rem">FAGR s.17 · FAGA s.9 · Order V7–V10</div>
+        </div>
+      </div>
+      <div class="row">
+        <button class="btn btn-primary" id="btn-primer-done">I’ve got it — deal the dirt</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- GAME -->
+  <section class="screen" id="screen-game">
+    <div class="wrap stack">
+      <div class="round-meta">
+        <div class="kicker" id="round-kicker">Act B · Round 1 of 10</div>
+        <div class="pill" id="live-score">0 correct</div>
+      </div>
+      <div class="progress" aria-hidden="true"><i id="progress-bar"></i></div>
+      <h2 id="round-title">Title</h2>
+      <p class="lede" id="round-prompt" style="max-width:none"></p>
+      <div class="hint-bar">Pick the <strong style="color:var(--legal)">legal / compliant</strong> practice. The other two track alleged abuse patterns from the Order appendix.</div>
+      <div class="stack" id="choices"></div>
+      <div class="feedback" id="feedback"></div>
+      <div class="reveal" id="reveal"></div>
+      <div class="row">
+        <button class="btn btn-primary" id="btn-next" disabled>Next round</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section class="screen" id="screen-results">
+    <div class="wrap stack">
+      <div class="kicker">Debrief</div>
+      <h2>You can still see the clean gate</h2>
+      <div class="scoreboard">
+        <div class="stat"><b id="final-score">0</b><span>Legal ones spotted / 10</span></div>
+        <div class="stat"><b id="final-pct">0%</b><span>Rule fluency</span></div>
+        <div class="stat"><b id="final-rank">—</b><span>Rank</span></div>
+      </div>
+      <div class="panel">
+        <p class="note" style="margin:0 0 .75rem" id="rank-blurb"></p>
+        <p class="note" style="margin:0">
+          Next: the remediation scorecard. RO reports claim many fixes. The AGM package (still missing) is what lets members check what they were actually told was “done.”
+        </p>
+      </div>
+      <div class="row">
+        <button class="btn btn-primary" id="btn-to-scorecard">Open remediation scorecard</button>
+        <button class="btn btn-ghost" id="btn-replay">Play again</button>
+        <a class="btn btn-ghost" href="index.html#submit">Tip a missing document</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCORECARD -->
+  <section class="screen" id="screen-scorecard">
+    <div class="wrap stack">
+      <div class="kicker" id="scorecard">Act D · Remediation tracker</div>
+      <h2>Was each concern actually fixed?</h2>
+      <p class="lede">
+        Default is <strong>Unverified</strong> until you have primary evidence. RO claims are noted where court reports already speak.
+        When the AGM remediation package arrives, re-score each row.
+      </p>
+      <div class="panel" style="overflow-x:auto">
+        <table class="score" id="scorecard-table">
+          <thead>
+            <tr>
+              <th>Concern</th>
+              <th>What “fixed” looks like</th>
+              <th>Evidence so far</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="panel stack">
+        <h3>When you get the AGM document</h3>
+        <p class="note" style="margin:0">
+          Drop it into the investigation folder or tip <strong>buperac@gmail.com</strong>. We’ll flip rows from Unverified → Remediated / Partial / Not addressed with citations.
+          The public record site is built to attract that package.
+        </p>
+        <div class="row">
+          <a class="btn btn-primary" href="index.html#submit">Submit AGM / Inspection Report</a>
+          <a class="btn btn-ghost" href="index.html">Back to Public Record</a>
+          <button class="btn btn-ghost" id="btn-replay-2">Replay the game</button>
+        </div>
+      </div>
+      <p class="footer-note">
+        Status legend: <span class="badge b-unknown">Unverified</span>
+        <span class="badge b-legal">Claimed by RO / Court docs</span>
+        <span class="badge b-dirt">Open / contested</span>
+        <span class="badge b-ministry">Needs AGM or Inspection Report</span>
+      </p>
+    </div>
+  </section>
+
+  <script>
+    const ROUNDS = [
+      {
+        id: "V1",
+        title: "Who gets a membership card?",
+        prompt: "A new applicant wants in so they can access cheap cattle money. Which practice is the legal one?",
+        choices: [
+          { text: "Approve a pure investor who holds shares in a farm corporation but never sets foot on the land to farm for gain or reward.", dirt: true },
+          { text: "Accept only people (or qualifying corps/partnerships) who own or lease Alberta land and directly carry on farming for gain or reward, with membership primarily for growing/finishing livestock.", dirt: false },
+          { text: "Let a related family name hold membership mainly so another operation can keep drawing program cattle without looking like the true user.", dirt: true }
+        ],
+        statute: "FAGR s.11(1)–(2) — membership eligibility; mere investor status is not enough (see also s.1(2)).",
+        order: "Order appendix V1: accepted members who did not meet land/farming requirements; memberships not primarily for growing/finishing.",
+        source: "Affidavit of Tony Ankermann, Exhibit A appendix · FAGR extract pp.9–10"
+      },
+      {
+        id: "V2",
+        title: "What can guaranteed money buy?",
+        prompt: "The co-op draws on the guaranteed facility. Which use is clean?",
+        choices: [
+          { text: "Use loan proceeds to run transactions for people who have already withdrawn as members.", dirt: true },
+          { text: "Spend proceeds on purposes outside livestock supply, advances, approved projects, price insurance, or related admin costs.", dirt: true },
+          { text: "Use proceeds only to buy livestock for members, give permitted advances, fund approved projects, buy allowed price insurance, or pay related admin costs.", dirt: false }
+        ],
+        statute: "FAGA s.4 · FAGR s.13 — closed list of allowed uses.",
+        order: "Order appendix V2: improper purposes; transactions for withdrawn members.",
+        source: "Affidavit Ex A · FAGA p.4 · FAGR p.11"
+      },
+      {
+        id: "V3",
+        title: "When must the spigot stay shut?",
+        prompt: "A member wants another load of cattle. When is it legal to supply or advance?",
+        choices: [
+          { text: "Supply even if the association knows (or should know) the member is in default under the member agreement.", dirt: true },
+          { text: "Refuse supply/advance if the member is in default or contravention, cannot be adequately supervised, lacks suitable feed/facilities, or a Provincial Supervisor order blocks it — and don’t feed people who aren’t eligible members.", dirt: false },
+          { text: "Advance anyway because the local supervisor ‘knows the family’ and paperwork can catch up later.", dirt: true }
+        ],
+        statute: "FAGR s.14(3) (default/contravention/supervision) · membership gate also FAGR s.11. Order text emphasizes ineligibility; statute text is broader.",
+        order: "Order appendix V3: livestock/advances to persons known or who should have been known ineligible under s.11.",
+        source: "Affidavit Ex A · FAGR p.12"
+      },
+      {
+        id: "V4",
+        title: "How fat can an equity advance be?",
+        prompt: "Cattle gained value in the pen. The member wants cash against that gain. What’s legal?",
+        choices: [
+          { text: "Advance more than 50% of the difference between purchase price and fair market value (when not under the insured/forward-contract exception).", dirt: true },
+          { text: "Cap the advance at the regulated percentage of the price-to-value gain (generally 50%, or up to 75% if properly forward contracted / price insured).", dirt: false },
+          { text: "Treat ‘equity’ as whatever number keeps the member happy this week; update weights later.", dirt: true }
+        ],
+        statute: "FAGR s.30(1)–(2) — advances only if FMV rose; percentage caps apply.",
+        order: "Order appendix V4: advances exceeded 50% of purchase-price vs FMV difference.",
+        source: "Affidavit Ex A · FAGR p.20"
+      },
+      {
+        id: "V5",
+        title: "How big can one member get?",
+        prompt: "A heavy user wants more cattle on the books. What’s the clean move?",
+        choices: [
+          { text: "Keep supplying past the prescribed total monetary obligation caps (generally $3M excluding advances, subject to allocation rules).", dirt: true },
+          { text: "Stop new livestock supply once the member’s total monetary obligation (ex advances) would exceed the regulated maximum — unless a lawful higher limit is properly set.", dirt: false },
+          { text: "Split the same economic interest across related memberships to dodge the look of a cap breach.", dirt: true }
+        ],
+        statute: "FAGR s.31(1) — maximum total monetary obligations; board may set lower; Minister may set higher for specified entities with risk measures.",
+        order: "Order appendix V5: supplied livestock in excess of prescribed total monetary obligation limits.",
+        source: "Affidavit Ex A · FAGR pp.20–22"
+      },
+      {
+        id: "V6",
+        title: "The 5% vault",
+        prompt: "Before cattle or an equity advance leave the building — what’s legal?",
+        choices: [
+          { text: "Skip the security deposit for a trusted large member and ‘catch it up after sale.’", dirt: true },
+          { text: "Fund the required deposit with an equity advance so the member doesn’t need cash.", dirt: true },
+          { text: "Collect enough cash so the co-op holds ≥5% of the member’s total monetary obligation (excluding interest) in the security deposit account before supply/advance.", dirt: false }
+        ],
+        statute: "FAGR s.33(1)–(2) — deposit timing, amount, and separate account. Later RO policies also ban equity-funded deposits.",
+        order: "Order appendix V6: failed to collect security deposits from certain members. V9 also lists equity advances used to pay deposits.",
+        source: "Affidavit Ex A · FAGR p.23 · RO Second Report policy themes"
+      },
+      {
+        id: "V7",
+        title: "When the inspectors show up",
+        prompt: "Ministry people want records and interviews. What’s the legal culture?",
+        choices: [
+          { text: "Staff refuse to speak; NDAs are used in a way that freezes interviews; leadership interferes with a witness interview; questions about amended minutes go unanswered.", dirt: true },
+          { text: "Do not obstruct inspectors; provide reasonable assistance, access, and answers within the Minister’s powers under the Act.", dirt: false },
+          { text: "Rewrite or stall on board-minute questions until the inspection window closes.", dirt: true }
+        ],
+        statute: "FAGA s.9(1) powers · s.9(3) no obstruction + reasonable assistance.",
+        order: "Order appendix V7: staff refused interviews; NDAs; Chairman Schooten interference; amended minutes unanswered.",
+        source: "Affidavit Ex A p.19 · FAGA p.6"
+      },
+      {
+        id: "V8",
+        title: "Sales paper that can survive daylight",
+        prompt: "Cattle move. Money moves. Which paper trail is legal?",
+        choices: [
+          { text: "Keep incomplete sale docs missing purchaser identity or purchase price; shrug when asked for records.", dirt: true },
+          { text: "Document purchases/sales with bills/invoices/settlement statements that carry the required fields (parties, description, price, etc.) and retain them for the required period.", dirt: false },
+          { text: "Rely on verbal yard deals and ‘everyone knows who bought them.’", dirt: true }
+        ],
+        statute: "FAGR s.17 — sale documentation content and retention (7 years).",
+        order: "Order appendix V8: inadequate sale documentation including purchaser name and price; failure to provide on request.",
+        source: "Affidavit Ex A · FAGR pp.13–14"
+      },
+      {
+        id: "V9",
+        title: "Admin culture: stamps and signatures",
+        prompt: "The office is flying. Which operating style is the clean one?",
+        choices: [
+          { text: "Lean on irregular powers of attorney, questionable signatures, and documents that may not be properly executed or witnessed.", dirt: true },
+          { text: "Process transactions in the names of members who have already withdrawn when it’s convenient for the file.", dirt: true },
+          { text: "Keep proper execution standards, real minutes and financial records, no equity-for-deposit shortcuts, and stop processing withdrawn members as if they were still in.", dirt: false }
+        ],
+        statute: "‘Unsound manner’ under FAGA s.6(1)(b) — not one section, but a package of governance hygiene. Later RO bylaws/policies target several of these exact practices.",
+        order: "Order appendix V9: POAs, irregular docs/signatures, equity advances for deposits, withdrawn-member processing, weak minutes/records, etc.",
+        source: "Affidavit Ex A p.19 · FAGA s.6 · RO Second Report policy reforms"
+      },
+      {
+        id: "V10",
+        title: "The boardroom",
+        prompt: "Directors set the tone. Which board practice is legal/healthy under the Order’s critique and co-op norms?",
+        choices: [
+          { text: "Ignore membership eligibility and monetary limits; allow a high share of related-party deals without real conflict handling.", dirt: true },
+          { text: "Run excessive board compensation/expenses and skip holding an AGM in a timely way.", dirt: true },
+          { text: "Enforce eligibility and limits, manage conflicts of interest, keep adequate financial statements, restrain director pay, and hold AGMs on time.", dirt: false }
+        ],
+        statute: "FAGA s.6(1)(b) unsound board practices; Cooperatives Act governance expectations; later Court-approved PBFC bylaws tightened conflicts and set volunteer-board expense rules.",
+        order: "Order appendix V10: eligibility failures, related transactions, conflicts, weak statements, excessive compensation, late AGM.",
+        source: "Affidavit Ex A p.19 · RO Second Report · Sept 2025 Court order on bylaws"
+      }
+    ];
+
+    const SCORECARD = [
+      { id: "V1", concern: "Ineligible members", fixed: "Requalification to FAGR s.11; refuse non-farming paper members", evidence: "RO reports: requalification process after May 26, 2025", status: "claimed", statusLabel: "Claimed by RO" },
+      { id: "V2", concern: "Improper loan-proceed uses / withdrawn members", fixed: "Proceeds only for s.13 purposes; no withdrawn-member processing", evidence: "Needs transaction-level proof (Inspection Report / audit samples)", status: "needs", statusLabel: "Needs primary docs" },
+      { id: "V3", concern: "Supplying despite contravention / ineligibility", fixed: "Hard stops for default, supervision, ineligibility", evidence: "Side letter / internal controls claimed; AGM package not held", status: "needs", statusLabel: "Needs primary docs" },
+      { id: "V4", concern: "Excess equity advances", fixed: "Advance math capped per s.30", evidence: "Policy/control claims in RO materials; not AGM-verified here", status: "unknown", statusLabel: "Unverified" },
+      { id: "V5", concern: "Over monetary obligation caps", fixed: "Enforce s.31 caps / lawful exceptions only", evidence: "Requalification + loan limits under RO", status: "claimed", statusLabel: "Claimed by RO" },
+      { id: "V6", concern: "Security deposits", fixed: "Collect ≥5% before supply; no equity-funded deposits", evidence: "Amended member policies (Court-approved Sept 2025) ban equity-for-deposit pattern", status: "claimed", statusLabel: "Policy fixed (RO/Court)" },
+      { id: "V7", concern: "Inspection obstruction", fixed: "Cooperation culture; no interview interference", evidence: "Hard to prove from AGM alone; cultural claim only", status: "unknown", statusLabel: "Unverified" },
+      { id: "V8", concern: "Sales documentation", fixed: "Complete s.17 docs retained 7 years", evidence: "RO notes file deficiencies being fixed on requalification", status: "claimed", statusLabel: "Partial / claimed" },
+      { id: "V9", concern: "Unsound administration", fixed: "No irregular POAs/signatures; real minutes & books", evidence: "New admin/staff + policies; AGM remediation narrative missing", status: "needs", statusLabel: "Needs AGM package" },
+      { id: "V10", concern: "Unsound board practices", fixed: "Conflicts, pay restraint, timely AGMs, related-party controls", evidence: "Court-approved bylaws/policies; new board Dec 2025; AGM Feb 2026 held — full package not in archive", status: "claimed", statusLabel: "Structural fix claimed" },
+      { id: "COST", concern: "Restructuring cost allocation fairness", fixed: "Transparent who pays RO/legal fees vs member equity", evidence: "Court fee approvals exist; member deposit-holdback debate unresolved in our files", status: "unknown", statusLabel: "Unverified at AGM" },
+      { id: "AGM", concern: "What members were told was remediated", fixed: "AGM package lists each concern + evidence", evidence: "RO Third Report describes AGM agenda (FS + auditor) — not a V1–V10 checklist we hold", status: "needs", statusLabel: "Waiting on tip" }
+    ];
+
+    let idx = 0;
+    let correct = 0;
+    let locked = false;
+
+    const $ = (id) => document.getElementById(id);
+    const screens = {
+      intro: $("screen-intro"),
+      primer: $("screen-primer"),
+      game: $("screen-game"),
+      results: $("screen-results"),
+      scorecard: $("screen-scorecard")
+    };
+
+    function show(name) {
+      Object.values(screens).forEach(s => s.classList.remove("active"));
+      screens[name].classList.add("active");
+      window.scrollTo({ top: 0, behavior: "instant" in window ? "instant" : "auto" });
+      $("nav-scorecard").hidden = name !== "scorecard" && name !== "results";
+    }
+
+    function shuffle(arr) {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function updateScoreUI() {
+      $("score-pill").textContent = `Score ${correct}/${Math.min(idx, ROUNDS.length)}`;
+      $("live-score").textContent = `${correct} correct`;
+      const pct = (idx / ROUNDS.length) * 100;
+      $("progress-bar").style.width = `${pct}%`;
+    }
+
+    function renderRound() {
+      locked = false;
+      const r = ROUNDS[idx];
+      $("round-kicker").textContent = `Act B · Round ${idx + 1} of ${ROUNDS.length} · ${r.id}`;
+      $("round-title").textContent = r.title;
+      $("round-prompt").textContent = r.prompt;
+      $("feedback").textContent = "";
+      $("feedback").className = "feedback";
+      $("reveal").className = "reveal";
+      $("reveal").innerHTML = "";
+      $("btn-next").disabled = true;
+      $("btn-next").textContent = idx === ROUNDS.length - 1 ? "See results" : "Next round";
+
+      const choices = shuffle(r.choices.map((c, i) => ({ ...c, i })));
+      const box = $("choices");
+      box.innerHTML = "";
+      choices.forEach((c, n) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "choice";
+        btn.innerHTML = `<div class="tag">Option ${String.fromCharCode(65 + n)}</div><div class="text"></div>`;
+        btn.querySelector(".text").textContent = c.text;
+        btn.addEventListener("click", () => onPick(btn, c, r, choices));
+        box.appendChild(btn);
+      });
+      updateScoreUI();
+    }
+
+    function onPick(btn, choice, round, allChoices) {
+      if (locked) return;
+      locked = true;
+      const buttons = [...$("choices").querySelectorAll(".choice")];
+      buttons.forEach(b => b.disabled = true);
+
+      const isLegal = !choice.dirt;
+      if (isLegal) {
+        correct += 1;
+        btn.classList.add("correct", "selected");
+        $("feedback").textContent = "Clean gate. That’s the legal practice.";
+        $("feedback").className = "feedback ok";
+      } else {
+        btn.classList.add("wrong", "selected");
+        $("feedback").textContent = "That’s dirt — alleged abuse pattern, not the rule.";
+        $("feedback").className = "feedback bad";
+        // highlight legal
+        buttons.forEach((b, i) => {
+          const c = allChoices[i];
+          // match by text
+        });
+        buttons.forEach(b => {
+          const t = b.querySelector(".text").textContent;
+          const match = round.choices.find(x => x.text === t);
+          if (match && !match.dirt) b.classList.add("correct");
+        });
+      }
+
+      $("reveal").className = "reveal show";
+      $("reveal").innerHTML = `
+        <div><span class="badge b-legal">Legal rule</span>${escapeHtml(round.statute)}</div>
+        <div style="margin-top:.55rem"><span class="badge b-ministry">Order appendix</span>${escapeHtml(round.order)}</div>
+        <div class="src">Source: ${escapeHtml(round.source)}</div>
+      `;
+      $("btn-next").disabled = false;
+      updateScoreUI();
+    }
+
+    function escapeHtml(s) {
+      return s.replace(/[&<>"']/g, ch => ({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[ch]));
+    }
+
+    function finish() {
+      $("final-score").textContent = String(correct);
+      const pct = Math.round((correct / ROUNDS.length) * 100);
+      $("final-pct").textContent = pct + "%";
+      let rank, blurb;
+      if (correct >= 9) { rank = "Supervisor"; blurb = "You can still hear the statute under the noise. That’s the skill this story needs."; }
+      else if (correct >= 7) { rank = "Brand inspector"; blurb = "Solid. A few dirt roads still look paved — replay the misses."; }
+      else if (correct >= 5) { rank = "New member"; blurb = "Halfway. The primer rules are the cheat codes — use them next run."; }
+      else { rank = "Yard tourist"; blurb = "The abuse patterns are sticky. Replay after one more pass on the clean system cards."; }
+      $("final-rank").textContent = rank;
+      $("rank-blurb").textContent = blurb;
+      show("results");
+    }
+
+    function renderScorecard() {
+      const tb = $("scorecard-table").querySelector("tbody");
+      tb.innerHTML = "";
+      SCORECARD.forEach(row => {
+        const tr = document.createElement("tr");
+        const badgeClass = row.status === "claimed" ? "b-legal" : row.status === "needs" ? "b-ministry" : "b-unknown";
+        tr.innerHTML = `
+          <td><strong>${escapeHtml(row.id)}</strong><br>${escapeHtml(row.concern)}</td>
+          <td>${escapeHtml(row.fixed)}</td>
+          <td class="note">${escapeHtml(row.evidence)}</td>
+          <td><span class="badge ${badgeClass}">${escapeHtml(row.statusLabel)}</span></td>
+        `;
+        tb.appendChild(tr);
+      });
+    }
+
+    function resetGame() {
+      idx = 0; correct = 0; locked = false;
+      renderRound();
+      show("game");
+    }
+
+    $("btn-start").onclick = () => show("primer");
+    $("btn-skip-primer").onclick = () => { renderRound(); show("game"); };
+    $("btn-primer-done").onclick = () => { renderRound(); show("game"); };
+    $("btn-next").onclick = () => {
+      if (idx >= ROUNDS.length - 1) finish();
+      else { idx += 1; renderRound(); }
+    };
+    $("btn-to-scorecard").onclick = () => { renderScorecard(); show("scorecard"); };
+    $("btn-replay").onclick = resetGame;
+    $("btn-replay-2").onclick = resetGame;
+    $("nav-scorecard").onclick = (e) => { e.preventDefault(); renderScorecard(); show("scorecard"); };
+
+    // deep link
+    if (location.hash === "#scorecard") { renderScorecard(); show("scorecard"); }
+  </script>
+</body>
+</html>
