@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <title>Moonopoly v2.2 — Feeder Finance Scandal Edition</title>
-  <meta name="description" content="Animated Monopoly-style satire of feeder association finance, with severity-ranked scandal cards from PBFC court-record themes." />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Moonopoly v3.0 — The Case-File Edition</title>
+  <meta name="description" content="A source-cited, animated board game built from the PBFC court record. Choose shortcuts or clean controls, manage scrutiny, and survive the Minister’s Order." />
+  <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxMDAgMTAwJz48dGV4dCB5PScuOWVtJyBmb250LXNpemU9JzkwJz7wn4yZPC90ZXh0Pjwvc3ZnPg==" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet" />
@@ -27,6 +28,7 @@
       --a: #ff9f43;
       --b: #feca57;
       --c: #54d6a5;
+      --r: #67d9c0;
       --display: "Fredoka", system-ui, sans-serif;
       --font: "Source Sans 3", system-ui, sans-serif;
       --mono: "IBM Plex Mono", monospace;
@@ -41,6 +43,9 @@
       overflow-x: hidden;
     }
     a { color: var(--gold); }
+    button, select, a { touch-action: manipulation; }
+    :focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+    .sr-only { position:absolute!important; width:1px!important; height:1px!important; padding:0!important; margin:-1px!important; overflow:hidden!important; clip:rect(0,0,0,0)!important; white-space:nowrap!important; border:0!important; }
     .wrap { width: min(1120px, calc(100% - .9rem)); margin: 0 auto; padding: .65rem 0 1.5rem; }
     header { display: flex; justify-content: space-between; gap: .8rem; flex-wrap: wrap; margin-bottom: .55rem; align-items: flex-start; }
     h1 { font-family: var(--display); margin: 0; font-size: clamp(1.55rem, 3.6vw, 2.15rem); letter-spacing: -.02em; }
@@ -104,6 +109,7 @@
     .tier-S { background: var(--s); color: #fff; }
     .tier-A { background: var(--a); color: #1a1000; }
     .tier-B { background: var(--b); color: #1a1400; }
+    .tier-R { background: var(--r); color: #062216; }
 
     .tokens { position: absolute; right: 2px; bottom: 2px; display: flex; gap: 2px; }
     .token {
@@ -185,7 +191,7 @@
       40% { transform: rotate(180deg) scale(1.15); }
       100% { transform: rotate(360deg) scale(1); }
     }
-    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: .4rem; }
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: .4rem; }
     .stat { background: #101710; border: 1px solid var(--line); border-radius: 9px; padding: .45rem .55rem; }
     .stat b { display: block; font-family: var(--display); font-size: 1.1rem; transition: color .2s; }
     .stat span { color: var(--muted); font-size: .75rem; }
@@ -200,7 +206,7 @@
 
     .legend { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .35rem; }
     .chip { font-family: var(--mono); font-size: .65rem; padding: .15rem .4rem; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); }
-    .chip.S{border-color:var(--s);color:#ffb4b4}.chip.A{border-color:var(--a);color:#ffd0a0}.chip.B{border-color:var(--b);color:#ffe7a0}
+    .chip.S{border-color:var(--s);color:#ffb4b4}.chip.A{border-color:var(--a);color:#ffd0a0}.chip.B{border-color:var(--b);color:#ffe7a0}.chip.R{border-color:var(--r);color:#a6f3df}
 
     .win-banner {
       display: none; margin-top: .45rem; padding: .65rem .7rem; border-radius: 10px;
@@ -216,7 +222,7 @@
     }
     .modal-bg.show { display: flex; }
     .modal {
-      width: min(440px, 100%); border-radius: 16px; padding: 1.1rem 1.15rem;
+      width: min(520px, 100%); border-radius: 16px; padding: 1.1rem 1.15rem;
       border: 2px solid var(--line); background: #1c241b;
       box-shadow: 0 30px 70px rgba(0,0,0,.5);
       transform-origin: center;
@@ -227,12 +233,16 @@
       100% { transform: none; opacity: 1; }
     }
     .modal.chance { border-color: #8a6a22; background: linear-gradient(180deg,#342a14,#1c241b); }
-    .modal.order { border-color: #8a3a30; background: linear-gradient(180deg,#3a1714,#1c241b); }
+    .modal.order, .modal.scandal { border-color: #8a3a30; background: linear-gradient(180deg,#3a1714,#1c241b); }
+    .modal.rebuild { border-color: #3b9f85; background: linear-gradient(180deg,#123a30,#1c241b); }
     .modal.buy { border-color: #3c6fd4; background: linear-gradient(180deg,#152033,#1c241b); }
     .modal .eyebrow { font-family: var(--mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
     .modal h3 { font-family: var(--display); margin: .25rem 0 .45rem; font-size: 1.3rem; }
     .modal p { margin: 0 0 .65rem; line-height: 1.45; }
-    .modal .cite { font-family: var(--mono); font-size: .7rem; color: var(--muted); margin-bottom: .8rem; }
+    .modal .quote { display:none; margin:.7rem 0; padding:.65rem .75rem; border-left:3px solid var(--gold); background:rgba(0,0,0,.2); color:#eee7d6; font-size:.88rem; line-height:1.4; }
+    .modal .quote.show { display:block; }
+    .modal .cite { font-family: var(--mono); font-size: .7rem; color: #b8c1ae; margin-bottom: .45rem; }
+    .modal .source-note { color:var(--muted); font-size:.72rem; line-height:1.35; margin:0 0 .8rem; }
     .tier-pill {
       display: inline-block; font-family: var(--mono); font-size: .7rem; font-weight: 700;
       padding: .15rem .45rem; border-radius: 999px; margin-bottom: .35rem;
@@ -241,6 +251,7 @@
     .tier-pill.A{background:var(--a);color:#1a1000}
     .tier-pill.B{background:var(--b);color:#1a1400}
     .tier-pill.C{background:var(--c);color:#062216}
+    .tier-pill.R{background:var(--r);color:#062216}
     .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: .45rem; }
     .modal-actions .btn { width: 100%; }
     .modal-actions.single { grid-template-columns: 1fr; }
@@ -297,12 +308,18 @@
           border-radius: 6px; padding: .15rem .35rem;
         }
 
-        .end-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: .4rem; margin: .75rem 0; }
+        .end-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(78px, 1fr)); gap: .4rem; margin: .75rem 0; }
         .end-stats div {
           background: #101710; border: 1px solid var(--line); border-radius: 10px; padding: .55rem; text-align: center;
         }
         .end-stats b { display: block; font-family: var(--display); font-size: 1.2rem; }
         .end-stats span { color: var(--muted); font-size: .72rem; }
+
+        .pass-token {
+          width: 64px; height: 64px; border-radius: 50%; margin: 0 auto .75rem;
+          border: 4px solid #0c120c; box-shadow: 0 0 0 3px var(--gold), 0 8px 24px rgba(0,0,0,.45);
+        }
+        .mobile-dock { display:none; }
 
         .confetti {
           position: fixed; inset: 0; pointer-events: none; z-index: 90; overflow: hidden; display: none;
@@ -317,13 +334,29 @@
         }
 
         @media (max-width: 920px) {
+          body { padding-bottom: 5rem; }
+          .mobile-dock {
+            position: fixed; z-index: 55; left: .55rem; right: .55rem; bottom: .55rem;
+            display: flex; align-items: center; justify-content: space-between; gap: .6rem;
+            padding: .55rem .65rem; border: 1px solid #4a6344; border-radius: 14px;
+            background: rgba(16,23,16,.96); box-shadow: 0 12px 36px rgba(0,0,0,.55);
+            backdrop-filter: blur(8px);
+          }
+          .mobile-dock span { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:700; }
+          .mobile-dock .btn { width:auto; min-width:132px; }
           .layout { gap: .55rem; }
           .board-shell { max-width: min(100vw - .9rem, 520px); margin: 0 auto; }
           .cell { font-size: clamp(.48rem, 2.4vw, .62rem); padding: 2px; }
           .token { width: 12px; height: 12px; }
           .side { order: 2; }
           .log { max-height: 120px; }
+          .modal-bg, .overlay { align-items:flex-start; overflow-y:auto; }
+          .modal, .overlay-card { margin:auto 0; }
           header { margin-bottom: .35rem; }
+        }
+        @media (max-width: 520px) {
+          .modal-actions { grid-template-columns: 1fr; }
+          .stats { grid-template-columns: repeat(2, 1fr); }
         }
         @media (prefers-reduced-motion: reduce) {
           .cell.pulse, .token.bounce, .die.spin, .flyer, .money-float, .overlay-card, .modal { animation: none !important; transition: none !important; }
@@ -334,8 +367,8 @@
   <div class="wrap">
     <header>
       <div>
-        <h1>🌙 Moonopoly <span style="font-size:.55em;color:var(--muted);font-weight:600">v2.1</span></h1>
-                <p class="tagline">Severity-ranked scandal cards · animated board · feeder-finance satire from PBFC court-record themes. S-tier = the “wait, what?” violations.</p>
+        <h1>🌙 Moonopoly <span style="font-size:.55em;color:var(--muted);font-weight:600">v3.0</span></h1>
+                <p class="tagline">The Case-File Edition · choose the shortcut or run it clean · every incident pinned to the public court record.</p>
               </div>
               <div class="toolbar">
                 <button class="icon-btn" id="btn-help" type="button">How to play</button>
@@ -350,7 +383,7 @@
 
     <div class="layout">
       <div class="board-shell" id="board-shell">
-        <div class="board" id="board"></div>
+        <div class="board" id="board" role="img" aria-label="Moonopoly board with 24 spaces arranged around the edge"></div>
         <div class="flyer p0" id="flyer0"></div>
         <div class="flyer p1" id="flyer1"></div>
         <div class="flyer p2" id="flyer2"></div>
@@ -360,32 +393,33 @@
       <div class="side">
         <div class="card">
           <h3>Table</h3>
-          <label style="display:block;font-size:.8rem;color:var(--muted);margin-bottom:.25rem">Mode</label>
+          <label for="mode-select" style="display:block;font-size:.8rem;color:var(--muted);margin-bottom:.25rem">Mode</label>
           <select id="mode-select" style="width:100%;margin-bottom:.55rem;padding:.45rem .5rem;border-radius:8px;border:1px solid var(--line);background:#101710;color:var(--ink);font:inherit">
             <option value="1b">1 player vs Bot</option>
             <option value="2h">2 player hotseat</option>
             <option value="3h">3 player hotseat</option>
             <option value="4h">4 player hotseat</option>
           </select>
-          <div class="players" id="players"></div>
-          <div id="turn-banner" style="display:none;margin:.35rem 0;padding:.45rem .55rem;border-radius:8px;background:#24301f;border:1px solid var(--gold);font-weight:700;text-align:center"></div>
-          <div class="dice-box" id="dice-box">
+          <div class="players" id="players" aria-label="Player standings"></div>
+          <div id="turn-banner" role="status" aria-live="polite" style="display:none;margin:.35rem 0;padding:.45rem .55rem;border-radius:8px;background:#24301f;border:1px solid var(--gold);font-weight:700;text-align:center"></div>
+          <div class="dice-box" id="dice-box" aria-label="Dice result" aria-live="polite">
             <span class="die" id="die1">·</span>
             <span class="die" id="die2">·</span>
           </div>
           <div style="display:grid;gap:.4rem">
-            <button class="btn btn-primary" id="btn-roll">Roll dice</button>
-            <button class="btn btn-ghost" id="btn-new">New game</button>
+            <button class="btn btn-primary" id="btn-roll" type="button">Roll dice</button>
+            <button class="btn btn-ghost" id="btn-new" type="button">New game</button>
           </div>
           <div class="win-banner" id="win"></div>
                     <div class="legend">
                       <span class="chip S">S shock</span>
                       <span class="chip A">A big</span>
-                      <span class="chip B">B culture</span>
+                      <span class="chip B">B controls</span>
+                      <span class="chip R">R rebuild</span>
                       <span class="chip">🔥 heat</span>
                       <span class="chip">🧊 freeze</span>
                     </div>
-                    <p class="fine">Win: $2800 or last operator standing. Hotseat: pass the device each turn. High heat hurts. S-tier freezes buying. Pass GO +$200.</p>
+                    <p class="fine">Win with a $2800 regulated score or as the last operator standing. Clean choices earn integrity; heat and strikes cut your score. Pass GO +$200.</p>
                   </div>
 
         <div class="card">
@@ -394,65 +428,83 @@
             <div class="stat"><b id="cash">$1500</b><span>Cash</span></div>
             <div class="stat"><b id="props">0</b><span>Pens</span></div>
             <div class="stat"><b id="heat">0</b><span>Scrutiny</span></div>
+            <div class="stat"><b id="integrity">0</b><span>Integrity</span></div>
             <div class="stat"><b id="infractions">0</b><span>S-strikes</span></div>
+            <div class="stat"><b id="score">1500</b><span>Reg. score</span></div>
           </div>
         </div>
 
         <div class="card">
           <h3>Yard log</h3>
-          <div class="log" id="log"></div>
+          <div class="log" id="log" role="log" aria-live="polite" aria-relevant="additions"></div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="modal-bg" id="modal">
-      <div class="modal" id="modal-card">
-        <div class="eyebrow" id="modal-eye">Card</div>
+  <div class="modal-bg" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-body">
+      <div class="modal" id="modal-card" tabindex="-1">
+        <div class="eyebrow" id="modal-eye">Case file</div>
         <div id="modal-tier"></div>
         <h3 id="modal-title">Title</h3>
         <p id="modal-body">Body</p>
+        <blockquote class="quote" id="modal-quote"></blockquote>
         <div class="cite" id="modal-cite"></div>
-        <div class="modal-actions single" id="modal-actions">
-          <button class="btn btn-primary" id="modal-ok">Continue</button>
-        </div>
+        <p class="source-note" id="modal-note"></p>
+        <div class="modal-actions single" id="modal-actions"></div>
       </div>
     </div>
 
-    <div class="overlay" id="tutorial">
-      <div class="overlay-card">
-        <h2>How Moonopoly works</h2>
-        <p style="margin:0;color:var(--muted)">A satirical feeder-finance board game. Cards dramatize themes from the PBFC Minister’s Order appendix and RO reports — not criminal convictions.</p>
+    <div class="overlay" id="tutorial" role="dialog" aria-modal="true" aria-labelledby="tutorial-title">
+      <div class="overlay-card" tabindex="-1">
+        <h2 id="tutorial-title">How Moonopoly v3 works</h2>
+        <p style="margin:0;color:var(--muted)">A satirical feeder-finance board game built from the filed IIS Inspection Report, Minister’s Order, and Restructuring Officer reports. IIS findings are allegations/administrative opinions—not criminal convictions.</p>
         <div class="steps">
           <div class="step"><b>1</b><div><strong>Roll & hop</strong> around the board. Pass GO for $200.</div></div>
-          <div class="step"><b>2</b><div><strong>Buy pens</strong> — S-tier scandal pens charge juicier rent when heat is high.</div></div>
-          <div class="step"><b>3</b><div><strong>Draw cards</strong> — Chance is chaos; Minister’s Order hits harder; Scandal Draw force-pulls S-tier.</div></div>
-          <div class="step"><b>4</b><div><strong>Survive heat</strong> — abuse raises scrutiny. 3 S-strikes can freeze buying.</div></div>
-          <div class="step"><b>S</b><div><strong>S-tier = biggest “wait, what?”</strong> — obstructing inspectors, equity-for-deposit, zombie members, guarantee misuse, ineligible memberships.</div></div>
+          <div class="step"><b>2</b><div><strong>Choose</strong> — a shortcut pays now but adds heat/strikes; clean controls cost now and earn integrity.</div></div>
+          <div class="step"><b>3</b><div><strong>Read the file</strong> — each case card includes an IIS excerpt and exact report page. R cards document recovery.</div></div>
+          <div class="step"><b>4</b><div><strong>Build a regulated score</strong> — cash + property equity + integrity, minus heat and strikes. Three S-strikes freeze buying.</div></div>
+          <div class="step"><b>S</b><div><strong>S-tier = scale + control shock</strong> — $79M payment routes, $63M mystery sales, withdrawn-member transactions, signatures, POAs, and inspection obstruction.</div></div>
         </div>
         <button class="btn btn-primary" id="tutorial-go" type="button">Let’s play</button>
       </div>
     </div>
 
-    <div class="overlay" id="end-overlay">
-      <div class="overlay-card">
+    <div class="overlay" id="end-overlay" role="dialog" aria-modal="true" aria-labelledby="end-title">
+      <div class="overlay-card" tabindex="-1">
         <h2 id="end-title">Game over</h2>
         <p id="end-blurb" style="margin:0;color:var(--muted)"></p>
         <div class="end-stats">
-          <div><b id="end-cash">$0</b><span>Your cash</span></div>
+          <div><b id="end-cash">$0</b><span>Cash</span></div>
+          <div><b id="end-integrity">0</b><span>Integrity</span></div>
           <div><b id="end-strikes">0</b><span>S-strikes</span></div>
           <div><b id="end-heat">0</b><span>Final heat</span></div>
+          <div><b id="end-score">0</b><span>Reg. score</span></div>
         </div>
         <p style="margin:0 0 .8rem;color:var(--muted);font-size:.9rem">
-          The funniest cards map to real Order themes. The archive is still missing the full Inspection Report and AGM package — if you have either, tip them in.
+          The full IIS Inspection Report is now in the archive. The next missing layer is its cited supporting-document set and the February 2026 AGM package—tip either if you have it.
         </p>
         <div style="display:grid;gap:.45rem">
           <button class="btn btn-primary" id="end-again" type="button">Play again</button>
-          <a class="btn btn-ghost" href="index.html#submit" style="text-align:center;text-decoration:none;display:block">Submit a missing document</a>
+          <a class="btn btn-ghost" href="index.html#submit" style="text-align:center;text-decoration:none;display:block">Submit a supporting document</a>
           <a class="btn btn-ghost" href="index.html" style="text-align:center;text-decoration:none;display:block">Read the Public Record</a>
           <a class="btn btn-ghost" href="play.html" style="text-align:center;text-decoration:none;display:block">Train on Spot the Legal One</a>
         </div>
       </div>
+    </div>
+
+    <div class="overlay" id="pass-overlay" role="dialog" aria-modal="true" aria-labelledby="pass-title">
+      <div class="overlay-card" tabindex="-1">
+        <div class="pass-token" id="pass-token" aria-hidden="true"></div>
+        <h2 id="pass-title">Pass the device</h2>
+        <p id="pass-copy" style="color:var(--muted)">Next ranch, take the screen.</p>
+        <button class="btn btn-primary" id="pass-ready" type="button">I’m ready</button>
+      </div>
+    </div>
+
+    <div class="mobile-dock" id="mobile-dock" aria-label="Mobile turn controls">
+      <span id="mobile-turn">Blue Ranch</span>
+      <button class="btn btn-primary" id="btn-roll-mobile" type="button">Roll dice</button>
     </div>
 
     <div class="confetti" id="confetti" aria-hidden="true"></div>
@@ -473,7 +525,7 @@
       { name: "Iron Springs Lot", type: "prop", group: "brown", price: 80, rent: 18, tier: "B" },
       { name: "Brand Tax", type: "tax", amount: 80 },
       { name: "Weak Minutes Motel", type: "prop", group: "lightblue", price: 100, rent: 22, tier: "B" },
-      { name: "JAIL\nTime-Out", type: "jail" },
+      { name: "RECORDS REVIEW\nTime-Out", type: "jail" },
       { name: "Related-Party Pen", type: "prop", group: "pink", price: 140, rent: 30, tier: "A" },
       { name: "Minister’s Order", type: "order" },
       { name: "Cap Bypass Yards", type: "prop", group: "pink", price: 160, rent: 34, tier: "A" },
@@ -485,7 +537,7 @@
       { name: "Guarantee Misuse", type: "prop", group: "red", price: 240, rent: 52, tier: "S" },
       { name: "Zombie Member Lane", type: "prop", group: "yellow", price: 260, rent: 56, tier: "S" },
       { name: "Equity-for-Deposit", type: "prop", group: "yellow", price: 280, rent: 60, tier: "S" },
-      { name: "GO TO JAIL", type: "gotojail" },
+      { name: "GO TO REVIEW", type: "gotojail" },
       { name: "NDA Interview Room", type: "prop", group: "green", price: 300, rent: 65, tier: "S" },
       { name: "SCANDAL DRAW", type: "scandal" },
       { name: "Exec Pay Penthouse", type: "prop", group: "green", price: 320, rent: 70, tier: "A" },
@@ -493,147 +545,178 @@
       { name: "FALG Crown Jewel", type: "prop", group: "blue", price: 400, rent: 95, tier: "S" }
     ];
 
-    // Ranked cards: S = most unbelievable + biggest
-    const CARDS = {
+    // Source-cited case files. IIS material is presented as allegation/opinion, not criminal guilt.
+    const SOURCE_NOTE = "Source layer: IIS inspection finding/opinion reproduced in a filed affidavit. Some findings were disputed. This is not a criminal conviction.";
+    const CASE_FILES = {
       S: [
         {
-          title: "Interview? What interview?",
-          body: "Inspectors want answers. Someone discovers selective mutism. NDAs bloom like spring canola. A chair allegedly sits on the witness pipeline.",
-          money: -180, heat: 3, freeze: 1, strike: 1,
-          cite: "S1 · Order V7 · FAGA s.9(3) obstruction themes"
+          title: "$79 million through one orbit",
+          body: "IIS reported more than $79M paid in eleven months to businesses linked to PBFC’s then-chair, including more than $9M that appeared to be Equity Advances.",
+          quote: "“From January to November 2022, PBFC paid over $79,000,000…”",
+          cite: "IIS Inspection Report ¶40, p.18 · filed Ankermann affidavit PDF p.21",
+          shortcut: { label: "Keep the fast lane", money: 220, heat: 3, strike: 1, freeze: 1 },
+          clean: { label: "Stop, disclose & review", money: -50, heat: -1, integrity: 2 }
         },
         {
-          title: "Deposit funded by… the advance",
-          body: "The 5% ‘skin in the game’ is paid with an equity advance. Schrödinger’s collateral: real and not real until observed.",
-          money: -160, heat: 3, freeze: 1, strike: 1,
-          cite: "S2 · Order V9 equity advances paying security deposits"
+          title: "33,000 cattle. One week. Mystery buyer.",
+          body: "IIS reported a one-week, $63M sale record naming a law firm and “Schooten & Sons,” and said it found no record of the true purchaser for cattle recorded as sold to the firm.",
+          quote: "“Over 33,000 cattle worth over $63,000,000 in one week…”",
+          cite: "IIS Inspection Report ¶141, p.38 · filed Ankermann affidavit PDF p.41",
+          shortcut: { label: "Post it and move on", money: 200, heat: 3, strike: 1 },
+          clean: { label: "Verify the purchaser", money: -60, heat: -1, integrity: 2 }
         },
         {
-          title: "Withdrawn, but still shopping",
-          body: "Membership ended. The cattle shopping did not RSVP ‘no.’ Zombie members still get program power.",
-          money: -150, heat: 3, freeze: 0, strike: 1,
-          cite: "S3 · Order V2/V9 withdrawn-member transaction themes"
+          title: "Accounts that outlived membership",
+          body: "IIS alleged that administrators kept processing agreements and transactions for two people after they withdrew.",
+          quote: "“Transactions totalling $5,996,140.58 occurred after they withdrew.”",
+          cite: "IIS Inspection Report ¶69, p.24 · filed Ankermann affidavit PDF p.27",
+          shortcut: { label: "Let the accounts walk", money: 170, heat: 3, strike: 1 },
+          clean: { label: "Close and reconcile", money: -35, heat: -1, integrity: 2 }
         },
         {
-          title: "Guarantee money, freestyle",
-          body: "Provincially backed proceeds wander off the livestock-supply trail. The regulation keeps a closed guest list. Someone brought plus-ones.",
-          money: -170, heat: 3, freeze: 1, strike: 1,
-          cite: "S4 · Order V2 · FAGA s.4 / FAGR s.13 purpose rules"
+          title: "Two hundred signatures do not match",
+          body: "IIS reported about 130 Equity Loan note signatures and 70 Livestock Supply Form signatures that did not match member driver’s-licence signatures.",
+          quote: "“These 130… and 70… signatures did not match the signatures reflected on the members’ driver’s licenses.”",
+          cite: "IIS Inspection Report ¶64, p.23 · filed Ankermann affidavit PDF p.26",
+          shortcut: { label: "Call it close enough", money: 190, heat: 3, strike: 1 },
+          clean: { label: "Re-execute every file", money: -80, heat: -1, integrity: 2 }
         },
         {
-          title: "Membership for spreadsheet ranchers",
-          body: "If you mainly farm from a laptop and a share certificate, the Act still wants land, boots, and growing/finishing as the point.",
-          money: -140, heat: 2, freeze: 0, strike: 1,
-          cite: "S5 · Order V1/V3 · FAGR s.11 eligibility"
+          title: "$120M under powers of attorney",
+          body: "IIS reported that the maximum cattle-contract and Equity Advance value available to members whose files carried these powers of attorney exceeded $120M.",
+          quote: "“The maximum value… available… was over $120,000,000.”",
+          cite: "IIS Inspection Report ¶36, p.17 · filed Ankermann affidavit PDF p.20",
+          shortcut: { label: "Centralize everything", money: 220, heat: 3, strike: 1 },
+          clean: { label: "Restore member control", money: -70, heat: -1, integrity: 2 }
         },
         {
-                  title: "Witness blocked, minutes amended",
-                  body: "Questions about amended board minutes hang in the air like feed dust. The inspection wants a conversation. The room wants a lawyer.",
-                  money: -130, heat: 3, freeze: 1, strike: 1,
-                  cite: "S1b · Order V7 amended-minutes / interference themes"
-                },
-                {
-                  title: "281 million reasons to care",
-                  body: "The loan book is roughly the size of a small city budget. When the guarantee program sneezes, southern Alberta catches a cold.",
-                  money: -100, heat: 2, freeze: 0, strike: 1,
-                  cite: "S-context · ~$281M member loans at freeze (Originating Application / Affidavit)"
-                },
-                {
-                  title: "Blank form, full risk",
-                  body: "Livestock supply forms and notes signed in blank ‘for speed.’ Speed is not a control. Speed is how controls die.",
-                  money: -120, heat: 2, freeze: 0, strike: 1,
-                  cite: "S-adjacent · Membership agreement blank-form authorizations + Order V9 irregular docs culture"
-                }
-              ],
+          title: "$129M co-sign concentration",
+          body: "IIS reported potential co-signing exposure for 32 other members and $7.56M of Equity Advances in the two sampled months.",
+          quote: "“Potential to co-sign for up to $129,012,871.80 of 32 other members’ liabilities.”",
+          cite: "IIS Inspection Report ¶67, p.24 · filed Ankermann affidavit PDF p.27",
+          shortcut: { label: "Stack the co-signers", money: 210, heat: 3, strike: 1 },
+          clean: { label: "Diversify the risk", money: -50, heat: -1, integrity: 2 }
+        },
+        {
+          title: "Inspection goes quiet",
+          body: "IIS reported refused interviews, advice not to respond, unanswered NDA questions, and unexplained amendments to ten board-meeting minutes.",
+          quote: "“The purpose of those amendments was not clear… [the] request for particulars… went unanswered.”",
+          cite: "IIS Inspection Report ¶59, pp.21–22 · filed Ankermann affidavit PDFs pp.24–25",
+          shortcut: { label: "Say nothing", money: 150, heat: 3, strike: 1, freeze: 1 },
+          clean: { label: "Cooperate and preserve", money: -30, heat: -2, integrity: 2 }
+        },
+        {
+          title: "$82.25M control stack",
+          body: "IIS calculated the combined livestock and Equity Advance access tied to powers of attorney over 18 specified-member accounts.",
+          quote: "“Access to $82,250,000 worth of livestock and Equity Advances at any one time.”",
+          cite: "IIS Inspection Report ¶54, p.21 · filed Ankermann affidavit PDF p.24",
+          shortcut: { label: "Use the full stack", money: 200, heat: 3, strike: 1 },
+          clean: { label: "Enforce individual limits", money: -60, heat: -1, integrity: 2 }
+        },
+        {
+          title: "The advance pays the deposit",
+          body: "IIS reported portions of Equity Advances were paid directly into member security-deposit accounts, contrary to a Manual rule that deposits cannot be financed.",
+          quote: "“Security deposits cannot be financed.”",
+          cite: "IIS Inspection Report ¶66, p.23 · filed Ankermann affidavit PDF p.26",
+          shortcut: { label: "Finance the skin-in-game", money: 180, heat: 3, strike: 1 },
+          clean: { label: "Collect real deposits", money: -40, heat: -1, integrity: 2 }
+        }
+      ],
       A: [
         {
-          title: "Napkin equity math",
-          body: "Advance exceeds the polite 50% of price-to-FMV gain. The napkin is not a regulation.",
-          money: 110, heat: 2, freeze: 0, strike: 0,
-          cite: "A6 · Order V4 · FAGR s.30"
+          title: "$58.68M in nineteen accounts",
+          body: "IIS reported that contracts for 19 specified members represented 24.1% of all livestock and Equity Advance value at September 2023.",
+          quote: "“Totaled $58,680,651.76, representing 24.1%…”",
+          cite: "IIS Inspection Report ¶55, p.21 · filed Ankermann affidavit PDF p.24",
+          shortcut: { label: "Keep concentrating", money: 150, heat: 2 },
+          clean: { label: "Set exposure limits", money: -35, heat: -1, integrity: 1 }
         },
         {
-          title: "Past the $3M gravity well",
-          body: "One book gets denser than the cap allows. Concentration risk says hello with a cattle trailer.",
-          money: 100, heat: 2, freeze: 0, strike: 0,
-          cite: "A7 · Order V5 · FAGR s.31"
+          title: "Twenty-nine deposits, two business groups",
+          body: "IIS alleged that related businesses paid security deposits for at least 29 members, bypassing part of the program’s risk-mitigation design.",
+          quote: "“PBFC bypassed part of the risk mitigation requirements imposed by the FALGP.”",
+          cite: "IIS Inspection Report ¶57, p.21 · filed Ankermann affidavit PDF p.24",
+          shortcut: { label: "Accept the bundle", money: 140, heat: 2 },
+          clean: { label: "Collect from each member", money: -30, heat: -1, integrity: 1 }
+        },
+
+        {
+          title: "Related receivables hit 50%",
+          body: "IIS reported related-party receivables rose sixfold to $47.14M and 50%, then the next year’s reporting stopped showing that category.",
+          quote: "“This drastically understated the extent of PBFC’s economic dependence on non-arm’s length transactions.”",
+          cite: "IIS Inspection Report ¶¶75–76, p.25 · filed Ankermann affidavit PDF p.28",
+          shortcut: { label: "Hide the column", money: 150, heat: 2 },
+          clean: { label: "Disclose the concentration", money: -25, heat: -1, integrity: 1 }
         },
         {
-          title: "Vault? We’ll invoice later",
-          body: "Security deposits treated like optional DLC. FAGR s.33 would like a refund policy.",
-          money: -120, heat: 2, freeze: 0, strike: 0,
-          cite: "A8 · Order V6 · FAGR s.33"
+          title: "$30M sale, written up later",
+          body: "IIS reported that $30M of cattle had been sold before March 8, 2024, but the transaction appeared on the April statement dated April 30.",
+          quote: "“PBFC did not document the sales until its April 2024 Statement of Sales.”",
+          cite: "IIS Inspection Report ¶68, p.24 · filed Ankermann affidavit PDF p.27",
+          shortcut: { label: "Backfill the ledger", money: 120, heat: 2 },
+          clean: { label: "Book sales promptly", money: -20, heat: -1, integrity: 1 }
         },
         {
-          title: "Related-party two-step",
-          body: "Same last names on both sides of the deal. The conflict-of-interest policy is doing interpretive dance.",
-          money: 90, heat: 2, freeze: 0, strike: 0,
-          cite: "A9 · Order V10 related transactions / conflicts"
-        },
-        {
-          title: "Million-dollar office energy",
-          body: "Admin + supervisor years that read like $1.3–1.6M. The new contracts later claim a crash diet.",
-          money: -100, heat: 1, freeze: 0, strike: 0,
-          cite: "A10 · RO First Report executive cost scale"
-        },
-        {
-          title: "Freeze lifted — for now",
-          body: "Corrective-action theater works. The Minister rescinds. Markets reopen. Your ulcer stays unionized.",
-          money: 200, heat: -3, freeze: -99, strike: 0,
-          cite: "C+ · May 1, 2025 rescind theme (RO reports)"
+          title: "Board pay jumps fivefold",
+          body: "IIS called $242,003 of fiscal-2022 board compensation and expenses excessive for a volunteer non-profit co-operative.",
+          quote: "“More than five times higher than for the previous fiscal year.”",
+          cite: "IIS Inspection Report ¶81, p.26 · filed Ankermann affidavit PDF p.29",
+          shortcut: { label: "Approve the package", money: 110, heat: 2 },
+          clean: { label: "Benchmark and disclose", money: -20, heat: -1, integrity: 1 }
         }
       ],
       B: [
         {
-          title: "Signature? Close enough",
-          body: "POAs, irregular signatures, documents that might have been witnessed by a friendly ghost.",
-          money: -60, heat: 1, freeze: 0, strike: 0,
-          cite: "B11 · Order V9 irregular docs / POAs"
+          title: "Purchaser? ‘Not our business.’",
+          body: "IIS alleged sales records did not routinely identify purchaser or price and reproduced this response from the interim administrator.",
+          quote: "“We have never required a record of where the cattle were sold or for how much, it is not our business.”",
+          cite: "IIS Inspection Report ¶60, p.22 · filed Ankermann affidavit PDF p.25",
+          shortcut: { label: "Keep the vibes ledger", money: 80, heat: 1 },
+          clean: { label: "Record buyer and price", money: -15, heat: -1, integrity: 1 }
         },
         {
-          title: "Bill of sale: ‘guy with truck’",
-          body: "Purchaser name optional. Price optional. Retention: vibes. FAGR s.17 is not a vibe.",
-          money: -70, heat: 1, freeze: 0, strike: 0,
-          cite: "B12 · Order V8 sales documentation"
+          title: "AGM: eight months late",
+          body: "IIS reported the announced 2023 AGM date was more than eight months beyond the Cooperatives Act deadline.",
+          quote: "“More than eight months later than allowed under the Cooperatives Act.”",
+          cite: "IIS Inspection Report ¶82, p.26 · filed Ankermann affidavit PDF p.29",
+          shortcut: { label: "Delay democracy", money: 70, heat: 1 },
+          clean: { label: "Hold the meeting", money: -15, heat: -1, integrity: 1 }
         },
         {
-          title: "Board buffet expense report",
-          body: "Director pay/expenses look less volunteer co-op, more open bar.",
-          money: -50, heat: 1, freeze: 0, strike: 0,
-          cite: "B13 · Order V10 excessive compensation"
+          title: "The policy draft nobody can find",
+          body: "IIS said minutes referenced co-signing and risk-policy work but did not explain it, and IIS had not seen a draft.",
+          quote: "“The meeting minutes do not explain what the Board was working on, or why.”",
+          cite: "IIS Inspection Report ¶70, p.24 · filed Ankermann affidavit PDF p.27",
+          shortcut: { label: "Minute the fog", money: 60, heat: 1 },
+          clean: { label: "Write and approve policy", money: -15, heat: -1, integrity: 1 }
         },
         {
-          title: "AGM loading…",
-          body: "Democracy is on backorder. The annual meeting will arrive after the scandal appetizers.",
-          money: -40, heat: 1, freeze: 0, strike: 0,
-          cite: "B14 · Order V10 late AGM"
+          title: "Twenty percent, most big dividends",
+          body: "IIS reported two member groups were about 20% of membership but received 63% of payments over $3,000 in 2022 and 54% in 2023.",
+          quote: "“63%… in 2022, and 54%… in 2023 despite making up just 20%…”",
+          cite: "IIS Inspection Report ¶48, p.19 · filed Ankermann affidavit PDF p.22",
+          shortcut: { label: "Keep the pattern", money: 80, heat: 1 },
+          clean: { label: "Audit allocation rules", money: -20, heat: -1, integrity: 1 }
         },
         {
-          title: "Minutes written in fog",
-          body: "Financial records and board minutes develop impressionist tendencies.",
-          money: -45, heat: 1, freeze: 0, strike: 0,
-          cite: "B15 · Order V9/V10 record-keeping"
-        },
-        {
-          title: "Cattle audit high-five",
-          body: "52 sites later: the cows exist. Existential dread downgrades to ordinary dread.",
-          money: 120, heat: -2, freeze: 0, strike: 0,
-          cite: "C+ · March 2025 cattle audit (RO / member updates)"
-        },
-        {
-          title: "Townhall donuts",
-          body: "Free coffee, expensive questions, Ministry on the line.",
-          money: -30, heat: -1, freeze: 0, strike: 0,
-          cite: "C · RO townhall communications"
-        },
-        {
-          title: "Unqualified audit confetti",
-          body: "Auditors do not set you on fire. In feeder-finance, that’s a parade float.",
-          money: 150, heat: -2, freeze: 0, strike: 0,
-          cite: "C+ · MNP FY2025 unqualified opinion theme"
+          title: "A $300 fee arrives in a $200,600 cheque",
+          body: "IIS tables showed related businesses paid many individual application fees, sometimes as a line item inside much larger cheques.",
+          quote: "“Members did not pay their own application fee.”",
+          cite: "IIS Inspection Report §2.1.3, pp.45–46 · filed Ankermann affidavit PDFs pp.48–49",
+          shortcut: { label: "Accept the batch", money: 70, heat: 1 },
+          clean: { label: "Verify member payment", money: -10, heat: -1, integrity: 1 }
         }
       ]
     };
+
+    const REBUILD_CARDS = [
+      { title: "52-site cattle audit", body: "The Restructuring Officer reported no significant missing-collateral finding after a March 2025 audit across 52 sites.", cite: "Restructuring Officer reporting · March 3–7, 2025", outcome: { money: 100, heat: -2, integrity: 1 } },
+      { title: "Minister’s Order rescinded", body: "The lending freeze was rescinded after corrective work. The administrative remedy changed with the record.", cite: "Ministerial rescission · May 1, 2025", outcome: { money: 140, heat: -3, integrity: 1, freeze: -99 } },
+      { title: "New lending resumes", body: "Program lending restarted. A functioning control system is more valuable than a dramatic press release.", cite: "Restructuring Officer reporting · May 26, 2025", outcome: { money: 120, heat: -1, integrity: 1 } },
+      { title: "Seven-director reset", body: "Members elected a new seven-director board in December 2025.", cite: "Restructuring Officer reporting · December 1, 2025", outcome: { money: 80, heat: -1, integrity: 2 } },
+      { title: "Unqualified audit opinion", body: "The fiscal-2025 audit received an unqualified opinion: recovery evidence, not a time machine.", cite: "MNP fiscal-2025 audit / Restructuring Officer reporting", outcome: { money: 110, heat: -2, integrity: 1 } },
+      { title: "‘Operating in a sound manner’", body: "The Ministry later advised that PBFC was operating in a sound manner. That does not erase earlier allegations; it documents the recovery state.", cite: "Ministry communication · April 23, 2026", outcome: { money: 100, heat: -2, integrity: 2 } }
+    ];
 
     const PLAYER_COLORS = ["var(--p1)", "var(--p2)", "var(--p3)", "var(--p4)"];
     const HOTSEAT_NAMES = ["Blue Ranch", "Pink Ranch", "Green Ranch", "Purple Ranch"];
@@ -673,6 +756,8 @@
           jail: 0,
           frozen: 0,
           strikes: 0,
+          integrity: 0,
+          buyBlocked: false,
           bankrupt: false
         });
       }
@@ -756,7 +841,7 @@
       center.innerHTML = `
         <div class="moon">🐄🌙</div>
         <h2>Moonopoly</h2>
-        <p>S-tier scandals hit hardest. Collect pens. Survive the Order deck.</p>
+        <p>Open case files. Take the shortcut—or build integrity by running it clean.</p>
         <div class="heat-ring"><i id="heat-bar"></i></div>
         <div class="heat-label" id="heat-label">Table heat: calm</div>
       `;
@@ -818,17 +903,23 @@
       document.getElementById("cash").textContent = `$${p.cash}`;
       document.getElementById("props").textContent = String(p.props.length);
       document.getElementById("heat").textContent = String(p.heat);
+      document.getElementById("integrity").textContent = String(p.integrity);
       document.getElementById("infractions").textContent = String(p.strikes);
+      document.getElementById("score").textContent = String(operatingScore(p));
       const rt = document.getElementById("ranch-title");
       if (rt) rt.textContent = state.over ? "Final ranch" : p.name;
       const box = document.getElementById("players");
       const ci = currentIndex();
       box.innerHTML = state.players.map((pl, i) => {
         const active = !state.over && ci === i ? "active" : "";
-        return `<div class="player-row ${active}"><span><span class="dot p${pl.id}"></span>${esc(pl.name)}${pl.bankrupt?" 💀":""}${pl.frozen>0?" 🧊":""}${pl.jail>0?" ⛔":""}</span><span>$${pl.cash} · 🔥${pl.heat}</span></div>`;
+        return `<div class="player-row ${active}"><span><span class="dot p${pl.id}"></span>${esc(pl.name)}${pl.bankrupt?" 💀":""}${pl.frozen>0?" 🧊":""}${pl.jail>0?" ⛔":""}</span><span>$${pl.cash} · 🔥${pl.heat} · 🛡${pl.integrity}</span></div>`;
       }).join("");
       const humanTurn = !state.over && !state.busy && p && p.human && !p.bankrupt;
       document.getElementById("btn-roll").disabled = !humanTurn;
+      const mobileRoll = document.getElementById("btn-roll-mobile");
+      if (mobileRoll) mobileRoll.disabled = !humanTurn;
+      const mobileTurn = document.getElementById("mobile-turn");
+      if (mobileTurn) mobileTurn.textContent = p ? `${p.name} · score ${operatingScore(p)}` : "Game over";
       const tb = document.getElementById("turn-banner");
       if (tb) {
         if (!state.over && p) {
@@ -851,15 +942,17 @@
     }
 
     function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+    const REDUCED_MOTION = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     async function animateDice(d1, d2) {
+      sfx("dice");
       const a = document.getElementById("die1");
       const b = document.getElementById("die2");
       a.classList.add("spin"); b.classList.add("spin");
       for (let i = 0; i < 6; i++) {
         a.textContent = String(1 + Math.floor(Math.random()*6));
         b.textContent = String(1 + Math.floor(Math.random()*6));
-        await wait(50);
+        await wait(REDUCED_MOTION ? 5 : 50);
       }
       a.textContent = String(d1);
       b.textContent = String(d2);
@@ -894,7 +987,7 @@
                 cell.classList.remove("pulse");
                 void cell.offsetWidth;
                 cell.classList.add("pulse");
-                await wait(220);
+                await wait(REDUCED_MOTION ? 15 : 220);
       }
       flyer.classList.remove("show");
       renderTokens();
@@ -905,75 +998,144 @@
       }
     }
 
-    function pickCard(forceTier) {
-      // forceTier: array like ['S'] or ['S','A']
-      const tiers = forceTier || ["S", "A", "B"];
-      // weight S rarer unless forced
-      let tier;
-      if (forceTier && forceTier.length === 1) tier = forceTier[0];
-      else {
-        const r = Math.random();
-        if (forceTier) {
-          // scandal space: 70% S, 30% A
-          tier = r < 0.7 ? "S" : "A";
-        } else if (r < 0.18) tier = "S";
-        else if (r < 0.55) tier = "A";
-        else tier = "B";
-      }
-      const deck = CARDS[tier];
-      const card = deck[Math.floor(Math.random() * deck.length)];
-      return { tier, card };
+    function randomFrom(items) {
+      return items[Math.floor(Math.random() * items.length)];
     }
 
-    function applyCard(p, tier, card) {
-          if (card.money) {
-            cash(p, card.money, true);
-            if (typeof sfx === "function" && card.money !== 0) sfx("cash");
-          }
-          p.heat = Math.max(0, p.heat + (card.heat || 0));
-          if (card.freeze === -99) p.frozen = 0;
-          else if (card.freeze) p.frozen = Math.max(p.frozen, card.freeze);
-          if (card.strike) p.strikes += card.strike;
-          if (tier === "S" && typeof sfx === "function") sfx("scandal");
-          // S-strike escalation
-          if (p.strikes >= 3 && p.frozen < 2) {
-            p.frozen = 2;
-            log(`${p.name} hit 3 S-strikes — emergency freeze!`, "scandal");
-          }
-        }
+    function pickCard(kind = "chance") {
+      if (kind === "scandal") return { tier: "S", card: randomFrom(CASE_FILES.S) };
+      if (kind === "order") {
+        const r = Math.random();
+        const tier = r < 0.55 ? "S" : r < 0.9 ? "A" : "B";
+        return { tier, card: randomFrom(CASE_FILES[tier]) };
+      }
+      if (Math.random() < 0.25) return { tier: "R", card: randomFrom(REBUILD_CARDS) };
+      const r = Math.random();
+      const tier = r < 0.12 ? "S" : r < 0.47 ? "A" : "B";
+      return { tier, card: randomFrom(CASE_FILES[tier]) };
+    }
 
-    function showModal({ kind, tier, title, body, cite, actions }) {
+    function outcomeText(label, outcome) {
+      const bits = [];
+      if (outcome.money) bits.push(`${outcome.money > 0 ? "+" : "−"}$${Math.abs(outcome.money)}`);
+      if (outcome.heat) bits.push(`${outcome.heat > 0 ? "+" : "−"}${Math.abs(outcome.heat)} heat`);
+      if (outcome.strike) bits.push(`+${outcome.strike} S-strike`);
+      if (outcome.integrity) bits.push(`+${outcome.integrity} integrity`);
+      return `${label} · ${bits.join(" · ") || "no change"}`;
+    }
+
+    function applyOutcome(p, tier, outcome, decision = "") {
+      const beforeStrikes = p.strikes;
+      if (outcome.money) {
+        cash(p, outcome.money, true);
+        sfx("cash");
+      }
+      p.heat = Math.max(0, p.heat + (outcome.heat || 0));
+      p.integrity = Math.max(0, p.integrity + (outcome.integrity || 0));
+      if (outcome.freeze === -99) p.frozen = 0;
+      else if (outcome.freeze) p.frozen = Math.max(p.frozen, outcome.freeze);
+      if (outcome.strike) p.strikes += outcome.strike;
+      if (tier === "S") sfx("scandal");
+      if (beforeStrikes < 3 && p.strikes >= 3) {
+        p.frozen = Math.max(p.frozen, 2);
+        log(`${p.name} hit 3 S-strikes — emergency buying freeze.`, "scandal");
+      }
+      if (beforeStrikes < 5 && p.strikes >= 5) {
+        p.frozen = Math.max(p.frozen, 3);
+        cash(p, -250, true);
+        log(`${p.name} hit 5 S-strikes — extended Order review and $250 cleanup.`, "scandal");
+      }
+      if (decision) log(`${p.name}: ${decision}.`, decision.includes("clean") ? "good" : "bad");
+    }
+
+    let lastDialogFocus = null;
+    function showModal({ kind, tier, title, body, quote = "", cite = "", note = "", actions }) {
       return new Promise(resolve => {
         const bg = document.getElementById("modal");
-        const card = document.getElementById("modal-card");
-        card.className = `modal ${kind}`;
+        const cardEl = document.getElementById("modal-card");
+        lastDialogFocus = document.activeElement;
+        cardEl.className = `modal ${kind}`;
         document.getElementById("modal-eye").textContent =
-          kind === "chance" ? "Chance · Yard Chaos" :
-          kind === "order" ? "Minister’s Order" :
-          kind === "scandal" ? "SCANDAL DRAW · S-tier pool" :
-          "Property";
+          kind === "chance" ? "CHANCE · CASE FILE" :
+          kind === "order" ? "MINISTER’S ORDER · CASE FILE" :
+          kind === "scandal" ? "SCANDAL DRAW · S-TIER CASE FILE" :
+          kind === "rebuild" ? "REBUILD FILE · DOCUMENTED RECOVERY" : "PROPERTY";
         const tierEl = document.getElementById("modal-tier");
-        if (tier) {
-          tierEl.innerHTML = `<span class="tier-pill ${tier}">Tier ${tier}</span>`;
-        } else tierEl.innerHTML = "";
+        tierEl.innerHTML = tier ? `<span class="tier-pill ${tier}">${tier === "R" ? "Rebuild" : `Tier ${tier}`}</span>` : "";
         document.getElementById("modal-title").textContent = title;
         document.getElementById("modal-body").textContent = body;
-        document.getElementById("modal-cite").textContent = cite || "";
+        const quoteEl = document.getElementById("modal-quote");
+        quoteEl.textContent = quote;
+        quoteEl.classList.toggle("show", !!quote);
+        document.getElementById("modal-cite").textContent = cite;
+        document.getElementById("modal-note").textContent = note;
         const actionsEl = document.getElementById("modal-actions");
         actionsEl.innerHTML = "";
         actionsEl.className = actions.length > 1 ? "modal-actions" : "modal-actions single";
+        const close = value => {
+          bg.classList.remove("show");
+          document.removeEventListener("keydown", trap);
+          if (lastDialogFocus && lastDialogFocus.focus) lastDialogFocus.focus();
+          resolve(value);
+        };
         actions.forEach(a => {
           const btn = document.createElement("button");
+          btn.type = "button";
           btn.className = a.primary ? "btn btn-primary" : "btn btn-ghost";
           btn.textContent = a.label;
-          btn.onclick = () => {
-            bg.classList.remove("show");
-            resolve(a.value);
-          };
+          btn.onclick = () => close(a.value);
           actionsEl.appendChild(btn);
         });
+        const trap = e => {
+          if (e.key !== "Tab") return;
+          const buttons = [...actionsEl.querySelectorAll("button")];
+          if (!buttons.length) return;
+          const first = buttons[0], last = buttons[buttons.length - 1];
+          if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+          else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+        };
+        document.addEventListener("keydown", trap);
         bg.classList.add("show");
+        requestAnimationFrame(() => actionsEl.querySelector("button")?.focus());
       });
+    }
+
+    function botDecision(p, card) {
+      if (p.heat >= 4 || p.strikes >= 2 || p.integrity >= 3) return "clean";
+      if (p.cash < 350) return "shortcut";
+      return Math.random() < 0.55 ? "shortcut" : "clean";
+    }
+
+    async function resolveCaseCard(p, kind, tier, card) {
+      if (tier === "R") {
+        await showModal({
+          kind: "rebuild", tier, title: card.title, body: card.body, cite: card.cite,
+          note: "Recovery evidence is kept separate from allegation severity.",
+          actions: [{ label: outcomeText("Apply recovery", card.outcome), value: true, primary: true }]
+        });
+        applyOutcome(p, tier, card.outcome, "documented rebuild");
+        return;
+      }
+      let decision;
+      if (p.human) {
+        decision = await showModal({
+          kind, tier, title: card.title, body: card.body, quote: card.quote, cite: card.cite,
+          note: SOURCE_NOTE,
+          actions: [
+            { label: outcomeText(card.shortcut.label, card.shortcut), value: "shortcut", primary: false },
+            { label: outcomeText(card.clean.label, card.clean), value: "clean", primary: true }
+          ]
+        });
+      } else {
+        decision = botDecision(p, card);
+        const chosen = card[decision];
+        await showModal({
+          kind, tier, title: card.title, body: card.body, quote: card.quote, cite: card.cite,
+          note: SOURCE_NOTE,
+          actions: [{ label: outcomeText(`Yard Bot chose: ${chosen.label}`, chosen), value: decision, primary: true }]
+        });
+      }
+      applyOutcome(p, tier, card[decision], decision === "clean" ? "ran it clean" : "took the shortcut");
     }
 
     async function land(p) {
@@ -998,11 +1160,11 @@
         return;
       }
       if (s.type === "jail") {
-        log(`${p.name} is just visiting the time-out pen.`);
+        log(`${p.name} is just visiting Records Review.`);
         return;
       }
       if (s.type === "gotojail") {
-        log(`${p.name} is frog-marched to JAIL.`, "bad");
+        log(`${p.name} is sent to Records Review.`, "bad");
         p.pos = 6;
         p.jail = 1;
         p.heat += 1;
@@ -1010,32 +1172,18 @@
         return;
       }
       if (s.type === "chance" || s.type === "order" || s.type === "scandal") {
-        const forced = s.type === "scandal" ? ["S"] : s.type === "order" ? null : null;
-        // order: bias to S/A; chance: full mix; scandal: S only
-        let pick;
-        if (s.type === "scandal") pick = pickCard(["S"]);
-        else if (s.type === "order") pick = Math.random() < 0.45 ? pickCard(["S"]) : pickCard(["A", "B"]);
-        else pick = pickCard();
+        const pick = pickCard(s.type);
         const { tier, card } = pick;
         const kind = s.type === "chance" ? "chance" : s.type === "scandal" ? "scandal" : "order";
-        log(`${p.name} draws ${tier}-tier: ${card.title}`, tier === "S" ? "scandal" : "cardish");
-        const moneyTxt = card.money ? ` (${card.money > 0 ? "+" : ""}$${card.money})` : "";
-        await showModal({
-          kind,
-          tier,
-          title: card.title,
-          body: card.body + moneyTxt,
-          cite: card.cite,
-          actions: [{ label: tier === "S" ? "Oof. Continue" : "Continue", value: true, primary: true }]
-        });
-        applyCard(p, tier, card);
+        log(`${p.name} opens ${tier === "R" ? "a rebuild" : `${tier}-tier`} file: ${card.title}`, tier === "S" ? "scandal" : tier === "R" ? "good" : "cardish");
+        await resolveCaseCard(p, kind, tier, card);
         renderAll();
         return;
       }
       if (s.type === "prop") {
         const owner = state.owners[p.pos];
         if (owner == null) {
-          const can = p.cash >= s.price && p.frozen <= 0;
+          const can = p.cash >= s.price && !p.buyBlocked;
           if (p.human) {
             if (!can) {
               log(`${p.name} can’t buy ${s.name} (cash or freeze).`);
@@ -1045,8 +1193,8 @@
               kind: "buy",
               tier: s.tier,
               title: s.name,
-              body: `Buy this ${s.tier || ""}-tier pen for $${s.price}? Rent $${s.rent}${s.tier === "S" ? " (scandal premium possible)" : ""}.`,
-              cite: "Owning scandal-themed pens increases rent when your heat is high.",
+              body: `Buy this ${s.tier || ""}-tier pen for $${s.price}? Base rent $${s.rent}${s.tier === "S" ? " plus a $15 evidence premium" : ""}.`,
+              cite: "High scrutiny cuts an owner’s rent by 25%; heat is a liability, not a bonus.",
               actions: [
                 { label: `Buy $${s.price}`, value: true, primary: true },
                 { label: "Pass", value: false, primary: false }
@@ -1062,8 +1210,8 @@
           return;
         }
         if (owner !== p.id) {
-          let rent = s.rent + Math.floor(state.players[owner].heat * 3);
-          if (s.tier === "S") rent += 15;
+          let rent = s.rent + (s.tier === "S" ? 15 : 0);
+          if (state.players[owner].heat >= 6) rent = Math.floor(rent * 0.75);
           log(`${p.name} pays $${rent} rent at ${s.name} to ${state.players[owner].name}.`, "bad");
           cash(p, -rent, true);
           cash(state.players[owner], rent, false);
@@ -1087,6 +1235,40 @@
       if (p && !p.human && !p.bankrupt) setTimeout(takeTurn, 550);
     }
 
+    function showHandoff(p) {
+      return new Promise(resolve => {
+        const overlay = document.getElementById("pass-overlay");
+        const ready = document.getElementById("pass-ready");
+        document.getElementById("pass-title").textContent = `Pass to ${p.name}`;
+        document.getElementById("pass-copy").textContent = "Previous turn complete. Hand over the device before revealing this ranch’s decisions.";
+        document.getElementById("pass-token").style.background = PLAYER_COLORS[p.id];
+        ready.textContent = `I’m ${p.name} — reveal my turn`;
+        ready.onclick = () => { overlay.classList.remove("show"); resolve(); };
+        overlay.classList.add("show");
+        requestAnimationFrame(() => ready.focus());
+      });
+    }
+
+    async function finishTurn(p) {
+      p.buyBlocked = false;
+      endCheck();
+      if (state.over) {
+        state.busy = false;
+        renderAll();
+        return;
+      }
+      nextTurn();
+      renderAll();
+      const np = currentPlayer();
+      if (np && np.human && state.mode !== "1b") {
+        log(`Pass the device to ${np.name}.`, "hi");
+        await showHandoff(np);
+      }
+      state.busy = false;
+      renderAll();
+      await maybeContinueBot();
+    }
+
     async function takeTurn() {
       if (state.over || state.busy) return;
       let p = currentPlayer();
@@ -1101,24 +1283,20 @@
         return;
       }
       state.busy = true;
+      p.buyBlocked = false;
       renderAll();
 
       if (p.jail > 0) {
         p.jail--;
-        log(`${p.name} serves time-out (${p.jail} left).`);
-        state.busy = false;
-        endCheck();
-        if (!state.over) {
-          nextTurn();
-          renderAll();
-          await maybeContinueBot();
-        }
+        log(`${p.name} serves Records Review (${p.jail} left).`);
+        await finishTurn(p);
         return;
       }
 
       if (p.frozen > 0) {
+        p.buyBlocked = true;
         p.frozen--;
-        log(`${p.name} is under mini-freeze (${p.frozen} left) — moving, not buying.`, "bad");
+        log(`${p.name} is under buying freeze (${p.frozen} turn${p.frozen === 1 ? "" : "s"} remain after this one).`, "bad");
       }
 
       const d1 = 1 + Math.floor(Math.random() * 6);
@@ -1126,7 +1304,6 @@
       await animateDice(d1, d2);
       const roll = d1 + d2;
       log(`${p.name} rolls ${roll}.`, "hi");
-
       await animateMove(p, roll);
 
       if (p.heat >= 6) {
@@ -1135,38 +1312,37 @@
       }
 
       await land(p);
-      endCheck();
-      state.busy = false;
-      if (!state.over) {
-        nextTurn();
-        renderAll();
-        const np = currentPlayer();
-        if (np && np.human && state.mode !== "1b") {
-          log(`Pass the device to ${np.name}.`, "hi");
-        }
-        await maybeContinueBot();
-      } else {
-        renderAll();
-      }
+      await finishTurn(p);
+    }
+
+    function propertyEquity(p) {
+      return p.props.reduce((sum, idx) => sum + Math.floor((SPACES[idx].price || 0) * 0.55), 0);
+    }
+
+    function operatingScore(p) {
+      if (!p || p.bankrupt) return 0;
+      return Math.max(0, Math.round(p.cash + propertyEquity(p) + p.integrity * 120 - p.heat * 45 - p.strikes * 90));
     }
 
     function endCheck() {
       const alive = state.players.filter(p => !p.bankrupt);
-      const rich = state.players.find(p => !p.bankrupt && p.cash >= 2800);
-      const turnCap = 40 * Math.max(2, playerCount());
+      const qualified = alive.filter(p => operatingScore(p) >= 2800 && p.heat < 6 && p.strikes < 3)
+        .sort((a, b) => operatingScore(b) - operatingScore(a));
+      const turnCap = 24 * Math.max(2, playerCount());
       if (alive.length === 1) {
         state.over = true;
         state.winnerId = alive[0].id;
         banner(`${alive[0].name} wins — last operator standing.`);
-      } else if (rich) {
+      } else if (qualified.length) {
+        const winner = qualified[0];
         state.over = true;
-        state.winnerId = rich.id;
-        banner(`${rich.name} hits $2800 and leaves in a gold gooseneck.`);
-      } else if (state.turn > turnCap) {
+        state.winnerId = winner.id;
+        banner(`${winner.name} reaches a $${operatingScore(winner)} regulated score and exits clean.`);
+      } else if (state.turn >= turnCap) {
         state.over = true;
-        const w = [...state.players].filter(p=>!p.bankrupt).sort((a,b)=>(b.cash+b.props.length*60)-(a.cash+a.props.length*60))[0];
-        state.winnerId = w.id;
-        banner(`Time. ${w.name} wins on cattle clout.`);
+        const winner = [...alive].sort((a, b) => operatingScore(b) - operatingScore(a))[0];
+        state.winnerId = winner.id;
+        banner(`Time. ${winner.name} wins with a $${operatingScore(winner)} regulated score.`);
       }
     }
 
@@ -1185,9 +1361,12 @@
           document.getElementById("end-title").textContent = humanWon ? `${focus.name} wins the yard` : `${focus ? focus.name : "Bot"} takes it`;
           document.getElementById("end-blurb").textContent = msg;
           document.getElementById("end-cash").textContent = `$${focus ? focus.cash : 0}`;
+          document.getElementById("end-integrity").textContent = String(focus ? focus.integrity : 0);
           document.getElementById("end-strikes").textContent = String(focus ? focus.strikes : 0);
           document.getElementById("end-heat").textContent = String(focus ? focus.heat : 0);
+          document.getElementById("end-score").textContent = String(operatingScore(focus));
           document.getElementById("end-overlay").classList.add("show");
+          requestAnimationFrame(() => document.getElementById("end-again").focus());
           if (humanWon) {
             sfx("win");
             confetti();
@@ -1289,34 +1468,20 @@
           state.players = newPlayers(state.mode);
           document.getElementById("win").classList.remove("show");
           document.getElementById("end-overlay").classList.remove("show");
+          document.getElementById("pass-overlay").classList.remove("show");
+          document.getElementById("modal").classList.remove("show");
           document.getElementById("die1").textContent = "·";
           document.getElementById("die2").textContent = "·";
           const modeLabel = ({ "1b": "1vBot", "2h": "2-hotseat", "3h": "3-hotseat", "4h": "4-hotseat" })[state.mode] || state.mode;
-          log(`New game (${modeLabel}). S-tier cards are the big ones. Survive them.`, "hi");
+          log(`New game (${modeLabel}). Case files offer a shortcut or a clean control.`, "hi");
           renderAll();
         }
 
-        async function animateDice(d1, d2) {
-          sfx("dice");
-          const a = document.getElementById("die1");
-          const b = document.getElementById("die2");
-          a.classList.add("spin"); b.classList.add("spin");
-          for (let i = 0; i < 6; i++) {
-            a.textContent = String(1 + Math.floor(Math.random()*6));
-            b.textContent = String(1 + Math.floor(Math.random()*6));
-            await wait(50);
-          }
-          a.textContent = String(d1);
-          b.textContent = String(d2);
-          a.classList.remove("spin"); b.classList.remove("spin");
-          void a.offsetWidth; a.classList.add("spin"); b.classList.add("spin");
-          await wait(280);
-          a.classList.remove("spin"); b.classList.remove("spin");
-        }
 
-        // patch animateMove hop sfx - replace inside via monkey after definition below
 
-        document.getElementById("btn-roll").onclick = () => { ensureAudio(); takeTurn(); };
+        const rollNow = () => { ensureAudio(); takeTurn(); };
+        document.getElementById("btn-roll").onclick = rollNow;
+        document.getElementById("btn-roll-mobile").onclick = rollNow;
         document.getElementById("btn-new").onclick = () => newGame();
         const modeSel = document.getElementById("mode-select");
         if (modeSel) {
@@ -1327,7 +1492,7 @@
             newGame();
           };
         }
-        document.getElementById("btn-help").onclick = () => document.getElementById("tutorial").classList.add("show");
+        document.getElementById("btn-help").onclick = () => { document.getElementById("tutorial").classList.add("show"); requestAnimationFrame(() => document.getElementById("tutorial-go").focus()); };
         document.getElementById("tutorial-go").onclick = () => {
           localStorage.setItem("moonopoly-tutored", "1");
           document.getElementById("tutorial").classList.remove("show");
@@ -1351,6 +1516,7 @@
           document.getElementById("tutorial").classList.add("show");
         }
         window.addEventListener("resize", () => renderTokens());
+        window.MoonopolyTest = { state, SPACES, CASE_FILES, REBUILD_CARDS, newGame, takeTurn, land, finishTurn, endCheck, pickCard, applyOutcome, operatingScore, propertyEquity };
       </script>
     </body>
     </html>
