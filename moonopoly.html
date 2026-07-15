@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>Moonopoly — Feeder Finance Edition</title>
+  <meta name="description" content="A satirical Monopoly-style board game about feeder association finance, based on public court-record themes from Picture Butte Feeder Cooperative." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0f1410;
+      --panel: #1a2219;
+      --ink: #f4f0e2;
+      --muted: #9aa38f;
+      --line: #2f3b2c;
+      --go: #2f9e6b;
+      --chance: #e0a23a;
+      --order: #c44b3a;
+      --deposit: #4a8fd4;
+      --feedlot: #8b6b3d;
+      --gold: #f0c14b;
+      --p1: #6ec6ff;
+      --p2: #ff8fab;
+      --radius: 12px;
+      --font: "Source Sans 3", system-ui, sans-serif;
+      --display: "Fredoka", system-ui, sans-serif;
+      --mono: "IBM Plex Mono", monospace;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh; color: var(--ink); font-family: var(--font);
+      background:
+        radial-gradient(800px 400px at 20% 0%, #24301f 0%, transparent 50%),
+        radial-gradient(600px 300px at 100% 10%, #2a2214 0%, transparent 45%),
+        var(--bg);
+    }
+    a { color: var(--gold); }
+    .wrap { width: min(1100px, calc(100% - 1rem)); margin: 0 auto; padding: .75rem 0 2rem; }
+    header {
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap;
+      margin-bottom: .75rem;
+    }
+    h1 {
+      font-family: var(--display); font-size: clamp(1.6rem, 4vw, 2.3rem); margin: 0;
+      letter-spacing: -.02em;
+    }
+    .tagline { color: var(--muted); margin: .2rem 0 0; max-width: 42ch; font-size: .95rem; }
+    .top-links { display: flex; gap: .6rem; flex-wrap: wrap; align-items: center; }
+    .top-links a { text-decoration: none; color: var(--muted); font-size: .9rem; }
+    .top-links a:hover { color: var(--ink); }
+    .layout {
+      display: grid; grid-template-columns: 1fr 320px; gap: 1rem; align-items: start;
+    }
+    @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+
+    .board-shell {
+      background: #162016; border: 2px solid #3d5238; border-radius: 18px; padding: .65rem;
+      box-shadow: 0 20px 50px rgba(0,0,0,.35);
+    }
+    .board {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      grid-template-rows: repeat(7, 1fr);
+      gap: 3px;
+      aspect-ratio: 1;
+      background: #0c120c;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .cell {
+      position: relative; background: var(--panel); border: 1px solid var(--line);
+      min-height: 0; padding: 3px; display: flex; flex-direction: column; justify-content: space-between;
+      font-size: clamp(.55rem, 1.1vw, .72rem); line-height: 1.15; overflow: hidden;
+    }
+    .cell.center {
+      grid-column: 2 / 7; grid-row: 2 / 7;
+      background:
+        radial-gradient(circle at 50% 40%, #2a3a24 0%, #152015 70%);
+      border: 1px solid #3f543b;
+      align-items: center; justify-content: center; text-align: center; padding: 1rem;
+    }
+    .cell.go { background: #163528; }
+    .cell.chance { background: #3a2e14; }
+    .cell.order { background: #3a1c18; }
+    .cell.tax { background: #2a1f2e; }
+    .cell.jail { background: #1c2430; }
+    .cell.corner { font-weight: 700; }
+    .cell .name { font-weight: 700; color: #f2ecda; }
+    .cell .price { color: var(--muted); font-family: var(--mono); font-size: .62em; }
+    .cell .bar {
+      height: 6px; border-radius: 2px 2px 0 0; margin: -3px -3px 2px; flex: 0 0 auto;
+    }
+    .bar.brown { background: #8b5a2b; }
+    .bar.lightblue { background: #79c4e8; }
+    .bar.pink { background: #e08ab8; }
+    .bar.orange { background: #e08a3c; }
+    .bar.red { background: #d44c4c; }
+    .bar.yellow { background: #e0c14a; }
+    .bar.green { background: #3c9e5a; }
+    .bar.blue { background: #3c6fd4; }
+    .tokens {
+      position: absolute; right: 2px; bottom: 2px; display: flex; gap: 2px; flex-wrap: wrap; max-width: 100%;
+    }
+    .token {
+      width: 14px; height: 14px; border-radius: 50%; border: 2px solid #0c120c;
+      box-shadow: 0 1px 3px rgba(0,0,0,.5);
+    }
+    .token.p0 { background: var(--p1); }
+    .token.p1 { background: var(--p2); }
+
+    .center h2 {
+      font-family: var(--display); margin: 0 0 .35rem; font-size: clamp(1.2rem, 3vw, 1.8rem);
+      color: var(--gold);
+    }
+    .center .moon { font-size: 2rem; line-height: 1; margin-bottom: .25rem; }
+    .center p { margin: 0; color: var(--muted); font-size: .85rem; max-width: 28ch; }
+
+    .side { display: grid; gap: .75rem; }
+    .card {
+      background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: .9rem 1rem;
+    }
+    .card h3 {
+      margin: 0 0 .5rem; font-family: var(--display); font-size: 1.05rem; font-weight: 600;
+    }
+    .btn {
+      appearance: none; border: 0; border-radius: 999px; padding: .65rem 1rem;
+      font: 700 .92rem var(--font); cursor: pointer; transition: .12s ease;
+    }
+    .btn-primary { background: var(--gold); color: #1a1405; width: 100%; }
+    .btn-primary:hover { filter: brightness(1.05); }
+    .btn-primary:disabled { opacity: .45; cursor: not-allowed; }
+    .btn-ghost {
+      background: transparent; color: var(--ink); border: 1px solid var(--line); width: 100%;
+    }
+    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
+    .stat {
+      background: #121a12; border: 1px solid var(--line); border-radius: 10px; padding: .55rem .65rem;
+    }
+    .stat b { display: block; font-family: var(--display); font-size: 1.15rem; }
+    .stat span { color: var(--muted); font-size: .78rem; }
+    .log {
+      max-height: 180px; overflow: auto; font-size: .84rem; color: var(--muted);
+      display: grid; gap: .35rem;
+    }
+    .log div { border-left: 2px solid var(--line); padding-left: .5rem; }
+    .log .hi { color: var(--ink); }
+    .log .bad { color: #f0a090; }
+    .log .good { color: #8fd9a8; }
+    .log .cardish { color: var(--chance); }
+
+    .modal-bg {
+      position: fixed; inset: 0; background: rgba(0,0,0,.65); display: none;
+      align-items: center; justify-content: center; padding: 1rem; z-index: 50;
+    }
+    .modal-bg.show { display: flex; }
+    .modal {
+      width: min(420px, 100%); background: #1c241b; border: 2px solid var(--line);
+      border-radius: 16px; padding: 1.1rem 1.15rem; box-shadow: 0 25px 60px rgba(0,0,0,.45);
+      animation: pop .2s ease;
+    }
+    @keyframes pop { from { transform: scale(.96); opacity: 0; } to { transform: none; opacity: 1; } }
+    .modal.chance { border-color: #8a6a22; background: linear-gradient(180deg, #2e2614, #1c241b); }
+    .modal.order { border-color: #8a3a30; background: linear-gradient(180deg, #2e1714, #1c241b); }
+    .modal .eyebrow {
+      font-family: var(--mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: .35rem;
+    }
+    .modal h3 { font-family: var(--display); margin: 0 0 .5rem; font-size: 1.25rem; }
+    .modal p { margin: 0 0 .75rem; line-height: 1.45; }
+    .modal .cite {
+      font-family: var(--mono); font-size: .72rem; color: var(--muted); margin-bottom: .9rem;
+    }
+    .players { display: grid; gap: .45rem; }
+    .player-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: .45rem .55rem; border-radius: 8px; background: #121a12; border: 1px solid var(--line);
+    }
+    .player-row.active { border-color: var(--gold); }
+    .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: .35rem; }
+    .dot.p0 { background: var(--p1); }
+    .dot.p1 { background: var(--p2); }
+    .dice {
+      font-family: var(--display); font-size: 1.4rem; text-align: center; min-height: 1.6em;
+      color: var(--gold);
+    }
+    .fine { color: var(--muted); font-size: .8rem; margin-top: .5rem; }
+    .win-banner {
+      display: none; margin-top: .5rem; padding: .7rem .8rem; border-radius: 10px;
+      background: #1f3a28; border: 1px solid #3f7a52; color: #c8f0d4; font-weight: 700;
+    }
+    .win-banner.show { display: block; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>🌙 Moonopoly</h1>
+        <p class="tagline">Feeder Finance Edition — buy the pens, draw the chaos, try not to get Minister-Ordered. Satirical board game inspired by public PBFC court-record themes.</p>
+      </div>
+      <div class="top-links">
+        <a href="index.html">Public Record</a>
+        <a href="play.html">Quiz mode</a>
+        <a href="index.html#submit">Tip a doc</a>
+      </div>
+    </header>
+
+    <div class="layout">
+      <div class="board-shell">
+        <div class="board" id="board"></div>
+      </div>
+
+      <div class="side">
+        <div class="card">
+          <h3>Table</h3>
+          <div class="players" id="players"></div>
+          <div class="dice" id="dice">Roll to start</div>
+          <div style="display:grid; gap:.45rem; margin-top:.65rem">
+            <button class="btn btn-primary" id="btn-roll">Roll dice</button>
+            <button class="btn btn-ghost" id="btn-new">New game</button>
+          </div>
+          <div class="win-banner" id="win"></div>
+          <p class="fine">1 human (blue) vs 1 bot (pink). Pass GO: +$200. Land on owned pen: pay rent. Draw Chance or Minister’s Order for incident cards. First to $2500 or last solvent wins.</p>
+        </div>
+
+        <div class="card">
+          <h3>Your wallet</h3>
+          <div class="stats">
+            <div class="stat"><b id="cash">$1500</b><span>Cash</span></div>
+            <div class="stat"><b id="props">0</b><span>Pens owned</span></div>
+            <div class="stat"><b id="heat">0</b><span>Scrutiny heat</span></div>
+            <div class="stat"><b id="turn">1</b><span>Turn</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Yard log</h3>
+          <div class="log" id="log"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-bg" id="modal">
+    <div class="modal" id="modal-card">
+      <div class="eyebrow" id="modal-eye">Chance</div>
+      <h3 id="modal-title">Title</h3>
+      <p id="modal-body">Body</p>
+      <div class="cite" id="modal-cite"></div>
+      <button class="btn btn-primary" id="modal-ok">Keep grazing</button>
+    </div>
+  </div>
+
+  <script>
+    // Board path: 24 spaces around a 7x7 ring (corners + 5 per side)
+    // Grid positions clockwise from bottom-left GO
+    const PATH_POS = [
+      // bottom row left->right (row 7): c1..c7 but we use 0-index grid
+      [6,0],[6,1],[6,2],[6,3],[6,4],[6,5],[6,6],
+      // right col up
+      [5,6],[4,6],[3,6],[2,6],[1,6],
+      // top row right->left
+      [0,6],[0,5],[0,4],[0,3],[0,2],[0,1],[0,0],
+      // left col down
+      [1,0],[2,0],[3,0],[4,0],[5,0]
+    ];
+    // 24 spaces
+    const SPACES = [
+      { name: "GO — Draw Day", type: "go", price: 0 },
+      { name: "Picture Butte Pens", type: "prop", group: "brown", price: 60, rent: 12 },
+      { name: "Chance", type: "chance" },
+      { name: "Iron Springs Lot", type: "prop", group: "brown", price: 60, rent: 14 },
+      { name: "Brand Inspection Tax", type: "tax", amount: 80 },
+      { name: "Nobleford Yards", type: "prop", group: "lightblue", price: 100, rent: 20 },
+      { name: "JAIL / Time Out", type: "jail" },
+      { name: "Turin Feeders", type: "prop", group: "pink", price: 120, rent: 24 },
+      { name: "Minister’s Order", type: "order" },
+      { name: "Coalhurst Corrals", type: "prop", group: "pink", price: 140, rent: 28 },
+      { name: "Monarch Meadows", type: "prop", group: "orange", price: 160, rent: 32 },
+      { name: "Lethbridge Office", type: "prop", group: "orange", price: 180, rent: 36 },
+      { name: "FREE PARKING\n(Inventory Audit)", type: "free" },
+      { name: "Deposit Vault", type: "prop", group: "red", price: 200, rent: 40 },
+      { name: "Chance", type: "chance" },
+      { name: "Equity Draw Desk", type: "prop", group: "red", price: 220, rent: 44 },
+      { name: "Related-Party Pen", type: "prop", group: "yellow", price: 240, rent: 48 },
+      { name: "Boardroom Suite", type: "prop", group: "yellow", price: 260, rent: 52 },
+      { name: "GO TO JAIL", type: "gotojail" },
+      { name: "Security Deposit Bank", type: "prop", group: "green", price: 280, rent: 56 },
+      { name: "Minister’s Order", type: "order" },
+      { name: "Syndicate Facility", type: "prop", group: "green", price: 300, rent: 60 },
+      { name: "Provincial Guarantee", type: "prop", group: "blue", price: 350, rent: 75 },
+      { name: "FALG Crown Jewel", type: "prop", group: "blue", price: 400, rent: 90 }
+    ];
+
+    // Funny cards grounded in public themes (satire of Order/RO story beats)
+    const CHANCE = [
+      {
+        title: "Blank promissory note special",
+        body: "You pre-sign the livestock supply form 'for efficiency.' The yard celebrates. Accounting does not.",
+        effect: (p) => cash(p, -75),
+        delta: -75,
+        cite: "Satire of irregular execution / blank form themes (Order V9 culture)."
+      },
+      {
+        title: "RFID & dangle-tag glow-up",
+        body: "Every head is tagged like a fashion week runway. Inspectors nod. You feel professional for 12 whole minutes.",
+        effect: (p) => { cash(p, 50); p.heat = Math.max(0, p.heat - 1); },
+        delta: 50,
+        cite: "Inspired by cattle audit identification checks (RO / member updates)."
+      },
+      {
+        title: "Overage is late, interest is early",
+        body: "Top-up payments crawl. Members text in ALL CAPS. You buy goodwill with a tiny interest sweetener.",
+        effect: (p) => cash(p, -40),
+        delta: -40,
+        cite: "Satire of overage delay era (RO member updates)."
+      },
+      {
+        title: "Townhall donuts",
+        body: "You host a townhall with Ministry folks on the line. Free coffee. Expensive questions.",
+        effect: (p) => { cash(p, -30); p.heat = Math.max(0, p.heat - 1); },
+        delta: -30,
+        cite: "Inspired by RO townhalls (June 2025 etc.)."
+      },
+      {
+        title: "Advance math on a napkin",
+        body: "Someone calculates equity advances with vibes instead of the 50% rule. The napkin is not GAAP.",
+        effect: (p) => { cash(p, 120); p.heat += 2; },
+        delta: 120,
+        cite: "Satire of FAGR s.30 / Order V4 advance-limit themes."
+      },
+      {
+        title: "Pass GO, collect cattle money",
+        body: "A clean sale settles. The co-op gets paid first. Capitalism, but with brands.",
+        effect: (p) => cash(p, 100),
+        delta: 100,
+        cite: "Purchase-loan sale-proceeds pattern (affidavit / membership structure)."
+      },
+      {
+        title: "Related-party two-step",
+        body: "The same last names appear on both sides of a deal. The dance floor is crowded.",
+        effect: (p) => { cash(p, 90); p.heat += 2; },
+        delta: 90,
+        cite: "Satire of related-transaction themes (Order V10)."
+      },
+      {
+        title: "Hire a real bookkeeper",
+        body: "Someone who can spell 'reconciliation' without opening WebMD. Miracles.",
+        effect: (p) => { cash(p, -60); p.heat = Math.max(0, p.heat - 2); },
+        delta: -60,
+        cite: "Inspired by RO staffing rebuild (admin/bookkeeper hires)."
+      },
+      {
+        title: "Security deposit yoink?",
+        body: "A member wants their 5% back yesterday. You explain FAGR like a bedtime story. Nobody sleeps.",
+        effect: (p) => cash(p, -50),
+        delta: -50,
+        cite: "Deposit return / holdback debates (RO First Report / member letters)."
+      },
+      {
+        title: "Unqualified audit high-five",
+        body: "Auditors do not set you on fire. In this economy, that’s a parade.",
+        effect: (p) => { cash(p, 150); p.heat = Math.max(0, p.heat - 2); },
+        delta: 150,
+        cite: "Inspired by MNP unqualified FY2025 opinion (RO Third Report)."
+      }
+    ];
+
+    const ORDERS = [
+      {
+        title: "Minister’s Freeze",
+        body: "No new guaranteed advances. The spigot squeaks shut. Welcome to the longest Tuesday of your life.",
+        effect: (p) => { cash(p, -200); p.heat += 3; p.frozen = 2; },
+        delta: -200,
+        cite: "Satire of Jan 2025 Minister’s Order under FAGA s.6."
+      },
+      {
+        title: "Ineligible membership drive",
+        body: "Someone who farms mostly from a spreadsheet got a card. The regulation would like a word.",
+        effect: (p) => { cash(p, -100); p.heat += 2; },
+        delta: -100,
+        cite: "Order appendix V1 · FAGR s.11 themes."
+      },
+      {
+        title: "Deposit? We’ll invoice the future",
+        body: "The 5% vault was treated like optional DLC. It was not optional DLC.",
+        effect: (p) => { cash(p, -120); p.heat += 2; },
+        delta: -120,
+        cite: "Order appendix V6 · FAGR s.33 themes."
+      },
+      {
+        title: "Inspection karaoke night",
+        body: "Inspectors want interviews. Staff suddenly discover they only speak in NDAs.",
+        effect: (p) => { cash(p, -90); p.heat += 3; },
+        delta: -90,
+        cite: "Order appendix V7 obstruction themes."
+      },
+      {
+        title: "Sales docs written in invisible ink",
+        body: "Purchaser name: 'guy with truck.' Price: 'good enough.' Retention: vibes.",
+        effect: (p) => { cash(p, -80); p.heat += 1; },
+        delta: -80,
+        cite: "Order appendix V8 · FAGR s.17 themes."
+      },
+      {
+        title: "Withdrawn member still shopping",
+        body: "The membership ended. The cattle shopping did not get the memo.",
+        effect: (p) => { cash(p, -110); p.heat += 2; },
+        delta: -110,
+        cite: "Order appendix V2/V9 withdrawn-member themes."
+      },
+      {
+        title: "Board buffet expense report",
+        body: "Director compensation looked less 'volunteer co-op' and more 'wedding open bar.'",
+        effect: (p) => { cash(p, -70); p.heat += 1; },
+        delta: -70,
+        cite: "Order appendix V10 excessive compensation themes."
+      },
+      {
+        title: "AGM? We’ll pencil it in… eventually",
+        body: "Democracy delayed is democracy doing a cattle drive the long way around.",
+        effect: (p) => { p.heat += 2; cash(p, -40); },
+        delta: -40,
+        cite: "Order appendix V10 late AGM theme."
+      },
+      {
+        title: "Rescinding Order rainbow",
+        body: "After corrective action theater, the freeze lifts. Markets reopen. Your ulcer stays.",
+        effect: (p) => { cash(p, 180); p.heat = Math.max(0, p.heat - 3); p.frozen = 0; },
+        delta: 180,
+        cite: "Inspired by May 1, 2025 rescind (RO reports)."
+      },
+      {
+        title: "Restructuring Officer enters the chat",
+        body: "A&M has the keys, the bank tokens, and a binder thicker than a feedlot gate.",
+        effect: (p) => { cash(p, -150); p.heat = Math.max(0, p.heat - 1); },
+        delta: -150,
+        cite: "Inspired by Feb 21, 2025 RO appointment (court file 2501-02733)."
+      }
+    ];
+
+    const state = {
+      turn: 0,
+      players: [
+        { id: 0, name: "You", human: true, cash: 1500, pos: 0, props: [], heat: 0, jail: 0, frozen: 0, bankrupt: false },
+        { id: 1, name: "Yard Bot", human: false, cash: 1500, pos: 0, props: [], heat: 0, jail: 0, frozen: 0, bankrupt: false }
+      ],
+      owners: Array(SPACES.length).fill(null),
+      log: [],
+      busy: false,
+      over: false
+    };
+
+    function cash(p, n) {
+      p.cash += n;
+      if (p.cash < 0) {
+        // force sell cheapest props
+        while (p.cash < 0 && p.props.length) {
+          const idx = p.props.sort((a,b)=>SPACES[a].price-SPACES[b].price)[0];
+          p.props = p.props.filter(i => i !== idx);
+          state.owners[idx] = null;
+          p.cash += Math.floor(SPACES[idx].price / 2);
+          log(`${p.name} fire-sales ${SPACES[idx].name} for $${Math.floor(SPACES[idx].price/2)}.`, "bad");
+        }
+        if (p.cash < 0) {
+          p.bankrupt = true;
+          p.cash = 0;
+          p.props.forEach(i => state.owners[i] = null);
+          p.props = [];
+          log(`${p.name} is tapped out. Bankrupt.`, "bad");
+        }
+      }
+    }
+
+    function log(msg, cls = "") {
+      state.log.unshift({ msg, cls });
+      if (state.log.length > 40) state.log.pop();
+      renderLog();
+    }
+
+    function renderLog() {
+      const el = document.getElementById("log");
+      el.innerHTML = state.log.map(l => `<div class="${l.cls}">${escapeHtml(l.msg)}</div>`).join("");
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+    }
+
+    function buildBoard() {
+      const board = document.getElementById("board");
+      board.innerHTML = "";
+
+      // Center logo
+      const center = document.createElement("div");
+      center.className = "cell center";
+      center.style.gridColumn = "2 / 7";
+      center.style.gridRow = "2 / 7";
+      center.innerHTML = `<div class="moon">🐄🌙</div><h2>Moonopoly</h2><p>Collect pens. Dodge Orders. Don't confuse equity advances with personality.</p>`;
+      board.appendChild(center);
+
+      PATH_POS.forEach((pos, idx) => {
+        const s = SPACES[idx];
+        const div = document.createElement("div");
+        div.className = "cell";
+        div.dataset.idx = idx;
+        div.style.gridRow = String(pos[0] + 1);
+        div.style.gridColumn = String(pos[1] + 1);
+        if (s.type === "go") div.classList.add("go", "corner");
+        if (s.type === "chance") div.classList.add("chance");
+        if (s.type === "order") div.classList.add("order");
+        if (s.type === "tax") div.classList.add("tax");
+        if (s.type === "jail" || s.type === "gotojail") div.classList.add("jail", "corner");
+        if (s.type === "free") div.classList.add("corner");
+        let bar = "";
+        if (s.group) bar = `<div class="bar ${s.group}"></div>`;
+        div.innerHTML = `${bar}<div class="name">${escapeHtml(s.name)}</div>${s.price ? `<div class="price">$${s.price}</div>` : ""}<div class="tokens" id="tok-${idx}"></div>`;
+        board.appendChild(div);
+      });
+    }
+
+    function renderTokens() {
+      for (let i = 0; i < SPACES.length; i++) {
+        const box = document.getElementById(`tok-${i}`);
+        if (!box) continue;
+        box.innerHTML = "";
+        state.players.forEach(p => {
+          if (!p.bankrupt && p.pos === i) {
+            const t = document.createElement("div");
+            t.className = `token p${p.id}`;
+            t.title = p.name;
+            box.appendChild(t);
+          }
+        });
+      }
+      // owner tint
+      document.querySelectorAll(".cell[data-idx]").forEach(cell => {
+        const idx = +cell.dataset.idx;
+        const owner = state.owners[idx];
+        cell.style.outline = owner == null ? "" : `2px solid ${owner === 0 ? "var(--p1)" : "var(--p2)"}`;
+      });
+    }
+
+    function renderSide() {
+      const p = state.players[0];
+      document.getElementById("cash").textContent = `$${p.cash}`;
+      document.getElementById("props").textContent = String(p.props.length);
+      document.getElementById("heat").textContent = String(p.heat);
+      document.getElementById("turn").textContent = String(state.turn + 1);
+      const box = document.getElementById("players");
+      box.innerHTML = state.players.map((pl, i) => {
+        const active = (!state.over && state.turn % 2 === i) ? "active" : "";
+        return `<div class="player-row ${active}"><span><span class="dot p${pl.id}"></span>${escapeHtml(pl.name)}${pl.bankrupt ? " 💀" : ""}${pl.frozen ? " 🧊" : ""}</span><span>$${pl.cash} · 🔥${pl.heat}</span></div>`;
+      }).join("");
+      const humanTurn = state.players[state.turn % 2].human && !state.over;
+      document.getElementById("btn-roll").disabled = state.busy || !humanTurn;
+    }
+
+    function showCard(kind, card, onClose) {
+      const modal = document.getElementById("modal");
+      const cardEl = document.getElementById("modal-card");
+      cardEl.className = `modal ${kind}`;
+      document.getElementById("modal-eye").textContent = kind === "chance" ? "Chance · Yard Chaos" : "Minister’s Order · Regulatory Heat";
+      document.getElementById("modal-title").textContent = card.title;
+      document.getElementById("modal-body").textContent = card.body + (card.delta ? ` (${card.delta > 0 ? "+" : ""}$${card.delta})` : "");
+      document.getElementById("modal-cite").textContent = card.cite;
+      modal.classList.add("show");
+      const ok = document.getElementById("modal-ok");
+      const handler = () => {
+        modal.classList.remove("show");
+        ok.removeEventListener("click", handler);
+        onClose();
+      };
+      ok.addEventListener("click", handler);
+    }
+
+    function drawFrom(deck) {
+      return deck[Math.floor(Math.random() * deck.length)];
+    }
+
+    function land(p) {
+      return new Promise(resolve => {
+        const s = SPACES[p.pos];
+        if (s.type === "go") {
+          log(`${p.name} hits GO energy. +$200.`, "good");
+          cash(p, 200);
+          return resolve();
+        }
+        if (s.type === "tax") {
+          log(`${p.name} pays brand-inspection tax $${s.amount}.`, "bad");
+          cash(p, -s.amount);
+          return resolve();
+        }
+        if (s.type === "free") {
+          log(`${p.name} parks on Inventory Audit. Cattle counted. Existential crisis free of charge.`);
+          p.heat = Math.max(0, p.heat - 1);
+          return resolve();
+        }
+        if (s.type === "jail") {
+          log(`${p.name} is just visiting the time-out pen.`);
+          return resolve();
+        }
+        if (s.type === "gotojail") {
+          log(`${p.name} is sent to JAIL for 'creative governance.'`, "bad");
+          p.pos = 6; // jail index
+          p.jail = 1;
+          p.heat += 1;
+          renderTokens();
+          return resolve();
+        }
+        if (s.type === "chance") {
+          const card = drawFrom(CHANCE);
+          log(`${p.name} draws Chance: ${card.title}`, "cardish");
+          showCard("chance", card, () => { card.effect(p); renderAll(); resolve(); });
+          return;
+        }
+        if (s.type === "order") {
+          const card = drawFrom(ORDERS);
+          log(`${p.name} draws Minister’s Order: ${card.title}`, "bad");
+          showCard("order", card, () => { card.effect(p); renderAll(); resolve(); });
+          return;
+        }
+        if (s.type === "prop") {
+          const owner = state.owners[p.pos];
+          if (owner == null) {
+            // buy?
+            const can = p.cash >= s.price && !p.frozen;
+            if (p.human) {
+              if (can && confirm(`Buy ${s.name} for $${s.price}?`)) {
+                buy(p, p.pos);
+              } else if (can) {
+                log(`${p.name} passes on ${s.name}.`);
+              } else {
+                log(`${p.name} can’t buy ${s.name} (cash/freeze).`);
+              }
+              return resolve();
+            } else {
+              // bot heuristic
+              if (can && (p.cash - s.price > 400 || s.price <= 180)) buy(p, p.pos);
+              else log(`${p.name} skips ${s.name}.`);
+              return resolve();
+            }
+          } else if (owner !== p.id) {
+            const rent = s.rent + (state.players[owner].heat > 3 ? 10 : 0);
+            log(`${p.name} pays $${rent} rent to ${state.players[owner].name} at ${s.name}.`, "bad");
+            cash(p, -rent);
+            cash(state.players[owner], rent);
+            return resolve();
+          } else {
+            log(`${p.name} visits their own pen: ${s.name}.`);
+            return resolve();
+          }
+        }
+        resolve();
+      });
+    }
+
+    function buy(p, idx) {
+      const s = SPACES[idx];
+      cash(p, -s.price);
+      state.owners[idx] = p.id;
+      p.props.push(idx);
+      log(`${p.name} buys ${s.name} for $${s.price}.`, "good");
+    }
+
+    async function takeTurn() {
+      if (state.over || state.busy) return;
+      const p = state.players[state.turn % 2];
+      if (p.bankrupt) {
+        endCheck();
+        state.turn++;
+        renderAll();
+        if (!state.over && !state.players[state.turn % 2].human) setTimeout(takeTurn, 500);
+        return;
+      }
+      state.busy = true;
+      renderAll();
+
+      if (p.jail > 0) {
+        p.jail--;
+        log(`${p.name} sits in time-out. (${p.jail} left)`);
+        state.busy = false;
+        state.turn++;
+        renderAll();
+        endCheck();
+        if (!state.over && !state.players[state.turn % 2].human) setTimeout(takeTurn, 600);
+        return;
+      }
+
+      if (p.frozen > 0) {
+        p.frozen--;
+        log(`${p.name} is under a mini-freeze (${p.frozen} turns left). Can move but buying is icy.`, "bad");
+      }
+
+      const d1 = 1 + Math.floor(Math.random() * 6);
+      const d2 = 1 + Math.floor(Math.random() * 6);
+      const roll = d1 + d2;
+      document.getElementById("dice").textContent = `🎲 ${d1} + ${d2} = ${roll}`;
+      log(`${p.name} rolls ${roll}.`, "hi");
+
+      const prev = p.pos;
+      p.pos = (p.pos + roll) % SPACES.length;
+      if (p.pos < prev) {
+        cash(p, 200);
+        log(`${p.name} passed GO. +$200.`, "good");
+      }
+      // heat tax
+      if (p.heat >= 6) {
+        cash(p, -50);
+        log(`${p.name} pays $50 scrutiny surcharge (heat ${p.heat}).`, "bad");
+      }
+      renderTokens();
+      await land(p);
+      endCheck();
+      state.busy = false;
+      state.turn++;
+      renderAll();
+      if (!state.over && !state.players[state.turn % 2].human) {
+        setTimeout(takeTurn, 700);
+      }
+    }
+
+    function endCheck() {
+      const alive = state.players.filter(p => !p.bankrupt);
+      const rich = state.players.find(p => p.cash >= 2500);
+      if (alive.length === 1) {
+        state.over = true;
+        banner(`${alive[0].name} wins — last operator standing.`);
+      } else if (rich) {
+        state.over = true;
+        banner(`${rich.name} wins — hit $2500 and left the yard in a gold truck.`);
+      } else if (state.turn > 80) {
+        state.over = true;
+        const winner = [...state.players].sort((a,b) => (b.cash + b.props.length*50) - (a.cash + a.props.length*50))[0];
+        banner(`Time call. ${winner.name} wins on net cattle clout.`);
+      }
+    }
+
+    function banner(msg) {
+      const el = document.getElementById("win");
+      el.textContent = msg;
+      el.classList.add("show");
+      log(msg, "good");
+      document.getElementById("btn-roll").disabled = true;
+    }
+
+    function renderAll() {
+      renderTokens();
+      renderSide();
+    }
+
+    function newGame() {
+      state.turn = 0;
+      state.over = false;
+      state.busy = false;
+      state.owners = Array(SPACES.length).fill(null);
+      state.log = [];
+      state.players = [
+        { id: 0, name: "You", human: true, cash: 1500, pos: 0, props: [], heat: 0, jail: 0, frozen: 0, bankrupt: false },
+        { id: 1, name: "Yard Bot", human: false, cash: 1500, pos: 0, props: [], heat: 0, jail: 0, frozen: 0, bankrupt: false }
+      ];
+      document.getElementById("win").classList.remove("show");
+      document.getElementById("dice").textContent = "Roll to start";
+      log("New game. Don’t confuse a provincial guarantee with a personality trait.", "hi");
+      renderAll();
+    }
+
+    document.getElementById("btn-roll").onclick = () => takeTurn();
+    document.getElementById("btn-new").onclick = () => newGame();
+
+    buildBoard();
+    newGame();
+  </script>
+</body>
+</html>
