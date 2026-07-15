@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <title>Moonopoly v2 — Feeder Finance Scandal Edition</title>
+  <title>Moonopoly v2.1 — Feeder Finance Scandal Edition</title>
   <meta name="description" content="Animated Monopoly-style satire of feeder association finance, with severity-ranked scandal cards from PBFC court-record themes." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -254,26 +254,93 @@
 
     .fine { color: var(--muted); font-size: .76rem; margin-top: .4rem; line-height: 1.35; }
     .shake { animation: shake .35s ease; }
-    @keyframes shake {
-      0%,100%{transform:translateX(0)}
-      25%{transform:translateX(-4px)}
-      75%{transform:translateX(4px)}
-    }
-  </style>
+        @keyframes shake {
+          0%,100%{transform:translateX(0)}
+          25%{transform:translateX(-4px)}
+          75%{transform:translateX(4px)}
+        }
+
+        .toolbar { display: flex; gap: .4rem; flex-wrap: wrap; align-items: center; }
+        .icon-btn {
+          appearance: none; border: 1px solid var(--line); background: #101710; color: var(--ink);
+          border-radius: 999px; padding: .4rem .7rem; font: 600 .8rem var(--font); cursor: pointer;
+        }
+        .icon-btn.on { border-color: var(--gold); color: var(--gold); }
+
+        .overlay {
+          position: fixed; inset: 0; z-index: 80; background: rgba(5,8,5,.82);
+          display: none; align-items: center; justify-content: center; padding: 1rem;
+          backdrop-filter: blur(5px);
+        }
+        .overlay.show { display: flex; }
+        .overlay-card {
+          width: min(480px, 100%); background: linear-gradient(180deg, #24301f, #152015);
+          border: 2px solid #4a6344; border-radius: 18px; padding: 1.2rem 1.25rem;
+          box-shadow: 0 30px 80px rgba(0,0,0,.55); animation: cardIn .35s ease;
+        }
+        .overlay-card h2 { font-family: var(--display); margin: 0 0 .5rem; font-size: 1.45rem; color: var(--gold); }
+        .overlay-card ol { margin: .4rem 0 1rem; padding-left: 1.2rem; color: var(--ink); }
+        .overlay-card li { margin: .35rem 0; }
+        .steps { display: grid; gap: .45rem; margin: .7rem 0 1rem; }
+        .step {
+          display: grid; grid-template-columns: auto 1fr; gap: .55rem; align-items: start;
+          background: #101710; border: 1px solid var(--line); border-radius: 10px; padding: .55rem .65rem;
+        }
+        .step b {
+          font-family: var(--mono); font-size: .72rem; color: #1a1405; background: var(--gold);
+          border-radius: 6px; padding: .15rem .35rem;
+        }
+
+        .end-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: .4rem; margin: .75rem 0; }
+        .end-stats div {
+          background: #101710; border: 1px solid var(--line); border-radius: 10px; padding: .55rem; text-align: center;
+        }
+        .end-stats b { display: block; font-family: var(--display); font-size: 1.2rem; }
+        .end-stats span { color: var(--muted); font-size: .72rem; }
+
+        .confetti {
+          position: fixed; inset: 0; pointer-events: none; z-index: 90; overflow: hidden; display: none;
+        }
+        .confetti.show { display: block; }
+        .confetti i {
+          position: absolute; top: -10px; width: 8px; height: 12px; border-radius: 2px;
+          animation: fall linear forwards;
+        }
+        @keyframes fall {
+          to { transform: translateY(110vh) rotate(720deg); opacity: .2; }
+        }
+
+        @media (max-width: 920px) {
+          .layout { gap: .55rem; }
+          .board-shell { max-width: min(100vw - .9rem, 520px); margin: 0 auto; }
+          .cell { font-size: clamp(.48rem, 2.4vw, .62rem); padding: 2px; }
+          .token { width: 12px; height: 12px; }
+          .side { order: 2; }
+          .log { max-height: 120px; }
+          header { margin-bottom: .35rem; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .cell.pulse, .token.bounce, .die.spin, .flyer, .money-float, .overlay-card, .modal { animation: none !important; transition: none !important; }
+        }
+      </style>
 </head>
 <body>
   <div class="wrap">
     <header>
       <div>
-        <h1>🌙 Moonopoly <span style="font-size:.55em;color:var(--muted);font-weight:600">v2</span></h1>
-        <p class="tagline">Severity-ranked scandal cards · animated board · feeder-finance satire from PBFC court-record themes. S-tier = the “wait, what?” violations.</p>
-      </div>
-      <div class="links">
-        <a href="index.html">Public Record</a>
-        <a href="play.html">Quiz</a>
-        <a href="index.html#submit">Tip a doc</a>
-      </div>
-    </header>
+        <h1>🌙 Moonopoly <span style="font-size:.55em;color:var(--muted);font-weight:600">v2.1</span></h1>
+                <p class="tagline">Severity-ranked scandal cards · animated board · feeder-finance satire from PBFC court-record themes. S-tier = the “wait, what?” violations.</p>
+              </div>
+              <div class="toolbar">
+                <button class="icon-btn" id="btn-help" type="button">How to play</button>
+                <button class="icon-btn" id="btn-mute" type="button" title="Toggle sound">Sound on</button>
+                <div class="links">
+                  <a href="index.html">Public Record</a>
+                  <a href="play.html">Quiz</a>
+                  <a href="index.html#submit">Tip a doc</a>
+                </div>
+              </div>
+            </header>
 
     <div class="layout">
       <div class="board-shell" id="board-shell">
@@ -295,15 +362,15 @@
             <button class="btn btn-ghost" id="btn-new">New game</button>
           </div>
           <div class="win-banner" id="win"></div>
-          <div class="legend">
-            <span class="chip S">S shock</span>
-            <span class="chip A">A big</span>
-            <span class="chip B">B culture</span>
-            <span class="chip">🔥 heat</span>
-            <span class="chip">🧊 freeze</span>
-          </div>
-          <p class="fine">Win: $2800 or bankrupt the bot. High heat hurts. S-tier Order cards can freeze buying. Pass GO +$200.</p>
-        </div>
+                    <div class="legend">
+                      <span class="chip S">S shock</span>
+                      <span class="chip A">A big</span>
+                      <span class="chip B">B culture</span>
+                      <span class="chip">🔥 heat</span>
+                      <span class="chip">🧊 freeze</span>
+                    </div>
+                    <p class="fine">Win: $2800 or bankrupt the bot. High heat hurts. S-tier Order cards can freeze buying. Pass GO +$200. First launch shows a short tutorial.</p>
+                  </div>
 
         <div class="card">
           <h3>Your ranch</h3>
@@ -324,19 +391,57 @@
   </div>
 
   <div class="modal-bg" id="modal">
-    <div class="modal" id="modal-card">
-      <div class="eyebrow" id="modal-eye">Card</div>
-      <div id="modal-tier"></div>
-      <h3 id="modal-title">Title</h3>
-      <p id="modal-body">Body</p>
-      <div class="cite" id="modal-cite"></div>
-      <div class="modal-actions single" id="modal-actions">
-        <button class="btn btn-primary" id="modal-ok">Continue</button>
+      <div class="modal" id="modal-card">
+        <div class="eyebrow" id="modal-eye">Card</div>
+        <div id="modal-tier"></div>
+        <h3 id="modal-title">Title</h3>
+        <p id="modal-body">Body</p>
+        <div class="cite" id="modal-cite"></div>
+        <div class="modal-actions single" id="modal-actions">
+          <button class="btn btn-primary" id="modal-ok">Continue</button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <script>
+    <div class="overlay" id="tutorial">
+      <div class="overlay-card">
+        <h2>How Moonopoly works</h2>
+        <p style="margin:0;color:var(--muted)">A satirical feeder-finance board game. Cards dramatize themes from the PBFC Minister’s Order appendix and RO reports — not criminal convictions.</p>
+        <div class="steps">
+          <div class="step"><b>1</b><div><strong>Roll & hop</strong> around the board. Pass GO for $200.</div></div>
+          <div class="step"><b>2</b><div><strong>Buy pens</strong> — S-tier scandal pens charge juicier rent when heat is high.</div></div>
+          <div class="step"><b>3</b><div><strong>Draw cards</strong> — Chance is chaos; Minister’s Order hits harder; Scandal Draw force-pulls S-tier.</div></div>
+          <div class="step"><b>4</b><div><strong>Survive heat</strong> — abuse raises scrutiny. 3 S-strikes can freeze buying.</div></div>
+          <div class="step"><b>S</b><div><strong>S-tier = biggest “wait, what?”</strong> — obstructing inspectors, equity-for-deposit, zombie members, guarantee misuse, ineligible memberships.</div></div>
+        </div>
+        <button class="btn btn-primary" id="tutorial-go" type="button">Let’s play</button>
+      </div>
+    </div>
+
+    <div class="overlay" id="end-overlay">
+      <div class="overlay-card">
+        <h2 id="end-title">Game over</h2>
+        <p id="end-blurb" style="margin:0;color:var(--muted)"></p>
+        <div class="end-stats">
+          <div><b id="end-cash">$0</b><span>Your cash</span></div>
+          <div><b id="end-strikes">0</b><span>S-strikes</span></div>
+          <div><b id="end-heat">0</b><span>Final heat</span></div>
+        </div>
+        <p style="margin:0 0 .8rem;color:var(--muted);font-size:.9rem">
+          The funniest cards map to real Order themes. The archive is still missing the full Inspection Report and AGM package — if you have either, tip them in.
+        </p>
+        <div style="display:grid;gap:.45rem">
+          <button class="btn btn-primary" id="end-again" type="button">Play again</button>
+          <a class="btn btn-ghost" href="index.html#submit" style="text-align:center;text-decoration:none;display:block">Submit a missing document</a>
+          <a class="btn btn-ghost" href="index.html" style="text-align:center;text-decoration:none;display:block">Read the Public Record</a>
+          <a class="btn btn-ghost" href="play.html" style="text-align:center;text-decoration:none;display:block">Train on Spot the Legal One</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="confetti" id="confetti" aria-hidden="true"></div>
+
+    <script>
     const PATH_POS = [
       [6,0],[6,1],[6,2],[6,3],[6,4],[6,5],[6,6],
       [5,6],[4,6],[3,6],[2,6],[1,6],
@@ -406,12 +511,24 @@
           cite: "S5 · Order V1/V3 · FAGR s.11 eligibility"
         },
         {
-          title: "Witness blocked, minutes amended",
-          body: "Questions about amended board minutes hang in the air like feed dust. The inspection wants a conversation. The room wants a lawyer.",
-          money: -130, heat: 3, freeze: 1, strike: 1,
-          cite: "S1b · Order V7 amended-minutes / interference themes"
-        }
-      ],
+                  title: "Witness blocked, minutes amended",
+                  body: "Questions about amended board minutes hang in the air like feed dust. The inspection wants a conversation. The room wants a lawyer.",
+                  money: -130, heat: 3, freeze: 1, strike: 1,
+                  cite: "S1b · Order V7 amended-minutes / interference themes"
+                },
+                {
+                  title: "281 million reasons to care",
+                  body: "The loan book is roughly the size of a small city budget. When the guarantee program sneezes, southern Alberta catches a cold.",
+                  money: -100, heat: 2, freeze: 0, strike: 1,
+                  cite: "S-context · ~$281M member loans at freeze (Originating Application / Affidavit)"
+                },
+                {
+                  title: "Blank form, full risk",
+                  body: "Livestock supply forms and notes signed in blank ‘for speed.’ Speed is not a control. Speed is how controls die.",
+                  money: -120, heat: 2, freeze: 0, strike: 1,
+                  cite: "S-adjacent · Membership agreement blank-form authorizations + Order V9 irregular docs culture"
+                }
+              ],
       A: [
         {
           title: "Napkin equity math",
@@ -698,13 +815,14 @@
         pos = next;
         p.pos = pos;
         const c = cellCenter(pos);
-        flyer.style.left = c.x + "px";
-        flyer.style.top = c.y + "px";
-        const cell = document.getElementById(`cell-${pos}`);
-        cell.classList.remove("pulse");
-        void cell.offsetWidth;
-        cell.classList.add("pulse");
-        await wait(220);
+                flyer.style.left = c.x + "px";
+                flyer.style.top = c.y + "px";
+                if (typeof sfx === "function") sfx("move");
+                const cell = document.getElementById(`cell-${pos}`);
+                cell.classList.remove("pulse");
+                void cell.offsetWidth;
+                cell.classList.add("pulse");
+                await wait(220);
       }
       flyer.classList.remove("show");
       renderTokens();
@@ -736,17 +854,21 @@
     }
 
     function applyCard(p, tier, card) {
-      if (card.money) cash(p, card.money, true);
-      p.heat = Math.max(0, p.heat + (card.heat || 0));
-      if (card.freeze === -99) p.frozen = 0;
-      else if (card.freeze) p.frozen = Math.max(p.frozen, card.freeze);
-      if (card.strike) p.strikes += card.strike;
-      // S-strike escalation
-      if (p.strikes >= 3 && p.frozen < 2) {
-        p.frozen = 2;
-        log(`${p.name} hit 3 S-strikes — emergency freeze!`, "scandal");
-      }
-    }
+          if (card.money) {
+            cash(p, card.money, true);
+            if (typeof sfx === "function" && card.money !== 0) sfx("cash");
+          }
+          p.heat = Math.max(0, p.heat + (card.heat || 0));
+          if (card.freeze === -99) p.frozen = 0;
+          else if (card.freeze) p.frozen = Math.max(p.frozen, card.freeze);
+          if (card.strike) p.strikes += card.strike;
+          if (tier === "S" && typeof sfx === "function") sfx("scandal");
+          // S-strike escalation
+          if (p.strikes >= 3 && p.frozen < 2) {
+            p.frozen = 2;
+            log(`${p.name} hit 3 S-strikes — emergency freeze!`, "scandal");
+          }
+        }
 
     function showModal({ kind, tier, title, body, cite, actions }) {
       return new Promise(resolve => {
@@ -954,34 +1076,179 @@
     }
 
     function banner(msg) {
-      const el = document.getElementById("win");
-      el.textContent = msg;
-      el.classList.add("show");
-      log(msg, "good");
-      document.getElementById("btn-roll").disabled = true;
-    }
+          const el = document.getElementById("win");
+          el.textContent = msg;
+          el.classList.add("show");
+          log(msg, "good");
+          document.getElementById("btn-roll").disabled = true;
+          showEndScreen(msg);
+        }
 
-    function newGame() {
-      state.turn = 0;
-      state.busy = false;
-      state.over = false;
-      state.owners = Array(SPACES.length).fill(null);
-      state.log = [];
-      state.players = newPlayers();
-      document.getElementById("win").classList.remove("show");
-      document.getElementById("die1").textContent = "·";
-      document.getElementById("die2").textContent = "·";
-      log("New game. S-tier cards are the ‘wait, what?’ violations. Survive them.", "hi");
-      renderAll();
-    }
+        function showEndScreen(msg) {
+          const you = state.players[0];
+          const won = !you.bankrupt && (msg.toLowerCase().includes("you wins") || msg.toLowerCase().includes("you hits") || (msg.startsWith("You")));
+          // more reliable win detection
+          const youWin = !you.bankrupt && (
+                      you.cash >= 2800 ||
+                      (state.players.filter(p => !p.bankrupt).length === 1) ||
+                      (state.turn > 90 && [...state.players].sort((a,b)=>(b.cash+b.props.length*60)-(a.cash+a.props.length*60))[0].id === 0)
+                    );
+          document.getElementById("end-title").textContent = youWin ? "You win the yard" : "The yard wins this round";
+          document.getElementById("end-blurb").textContent = msg;
+          document.getElementById("end-cash").textContent = `$${you.cash}`;
+          document.getElementById("end-strikes").textContent = String(you.strikes);
+          document.getElementById("end-heat").textContent = String(you.heat);
+          document.getElementById("end-overlay").classList.add("show");
+          if (youWin) {
+            sfx("win");
+            confetti();
+          } else {
+            sfx("lose");
+          }
+        }
 
-    document.getElementById("btn-roll").onclick = () => takeTurn();
-    document.getElementById("btn-new").onclick = () => newGame();
+        function confetti() {
+          const box = document.getElementById("confetti");
+          box.innerHTML = "";
+          box.classList.add("show");
+          const colors = ["#f0c14b", "#6ec6ff", "#ff8fab", "#5dca86", "#ff9f43"];
+          for (let i = 0; i < 48; i++) {
+            const p = document.createElement("i");
+            p.style.left = Math.random() * 100 + "%";
+            p.style.background = colors[i % colors.length];
+            p.style.animationDuration = (1.2 + Math.random() * 1.8) + "s";
+            p.style.animationDelay = (Math.random() * 0.4) + "s";
+            box.appendChild(p);
+          }
+          setTimeout(() => { box.classList.remove("show"); box.innerHTML = ""; }, 2800);
+        }
 
-    buildBoard();
-    newGame();
-    // reposition flyers on resize
-    window.addEventListener("resize", () => renderTokens());
-  </script>
-</body>
-</html>
+        // --- Sound (tiny WebAudio beeps; no assets) ---
+        const audio = {
+          ctx: null,
+          muted: localStorage.getItem("moonopoly-mute") === "1"
+        };
+        function ensureAudio() {
+          if (!audio.ctx) audio.ctx = new (window.AudioContext || window.webkitAudioContext)();
+          if (audio.ctx.state === "suspended") audio.ctx.resume();
+        }
+        function sfx(kind) {
+          if (audio.muted) return;
+          try {
+            ensureAudio();
+            const ctx = audio.ctx;
+            const o = ctx.createOscillator();
+            const g = ctx.createGain();
+            o.connect(g); g.connect(ctx.destination);
+            const now = ctx.currentTime;
+            if (kind === "dice") {
+              o.type = "triangle"; o.frequency.value = 180 + Math.random() * 80;
+              g.gain.setValueAtTime(0.05, now);
+              g.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+              o.start(now); o.stop(now + 0.09);
+            } else if (kind === "move") {
+              o.type = "square"; o.frequency.value = 320;
+              g.gain.setValueAtTime(0.03, now);
+              g.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+              o.start(now); o.stop(now + 0.06);
+            } else if (kind === "cash") {
+              o.type = "sine"; o.frequency.setValueAtTime(520, now);
+              o.frequency.exponentialRampToValueAtTime(780, now + 0.12);
+              g.gain.setValueAtTime(0.04, now);
+              g.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+              o.start(now); o.stop(now + 0.16);
+            } else if (kind === "scandal") {
+              o.type = "sawtooth"; o.frequency.setValueAtTime(140, now);
+              o.frequency.exponentialRampToValueAtTime(70, now + 0.28);
+              g.gain.setValueAtTime(0.05, now);
+              g.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+              o.start(now); o.stop(now + 0.32);
+            } else if (kind === "win") {
+              [523, 659, 784].forEach((f, i) => {
+                const o2 = ctx.createOscillator(); const g2 = ctx.createGain();
+                o2.type = "sine"; o2.frequency.value = f;
+                o2.connect(g2); g2.connect(ctx.destination);
+                const t = now + i * 0.1;
+                g2.gain.setValueAtTime(0.04, t);
+                g2.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+                o2.start(t); o2.stop(t + 0.22);
+              });
+            } else if (kind === "lose") {
+              o.type = "triangle"; o.frequency.setValueAtTime(300, now);
+              o.frequency.exponentialRampToValueAtTime(120, now + 0.35);
+              g.gain.setValueAtTime(0.04, now);
+              g.gain.exponentialRampToValueAtTime(0.001, now + 0.36);
+              o.start(now); o.stop(now + 0.37);
+            }
+          } catch (_) {}
+        }
+        function updateMuteBtn() {
+          const b = document.getElementById("btn-mute");
+          b.textContent = audio.muted ? "Sound off" : "Sound on";
+          b.classList.toggle("on", !audio.muted);
+        }
+
+        function newGame() {
+          state.turn = 0;
+          state.busy = false;
+          state.over = false;
+          state.owners = Array(SPACES.length).fill(null);
+          state.log = [];
+          state.players = newPlayers();
+          document.getElementById("win").classList.remove("show");
+          document.getElementById("end-overlay").classList.remove("show");
+          document.getElementById("die1").textContent = "·";
+          document.getElementById("die2").textContent = "·";
+          log("New game. S-tier cards are the ‘wait, what?’ violations. Survive them.", "hi");
+          renderAll();
+        }
+
+        async function animateDice(d1, d2) {
+          sfx("dice");
+          const a = document.getElementById("die1");
+          const b = document.getElementById("die2");
+          a.classList.add("spin"); b.classList.add("spin");
+          for (let i = 0; i < 6; i++) {
+            a.textContent = String(1 + Math.floor(Math.random()*6));
+            b.textContent = String(1 + Math.floor(Math.random()*6));
+            await wait(50);
+          }
+          a.textContent = String(d1);
+          b.textContent = String(d2);
+          a.classList.remove("spin"); b.classList.remove("spin");
+          void a.offsetWidth; a.classList.add("spin"); b.classList.add("spin");
+          await wait(280);
+          a.classList.remove("spin"); b.classList.remove("spin");
+        }
+
+        // patch animateMove hop sfx - replace inside via monkey after definition below
+
+        document.getElementById("btn-roll").onclick = () => { ensureAudio(); takeTurn(); };
+        document.getElementById("btn-new").onclick = () => newGame();
+        document.getElementById("btn-help").onclick = () => document.getElementById("tutorial").classList.add("show");
+        document.getElementById("tutorial-go").onclick = () => {
+          localStorage.setItem("moonopoly-tutored", "1");
+          document.getElementById("tutorial").classList.remove("show");
+          ensureAudio();
+        };
+        document.getElementById("end-again").onclick = () => {
+          document.getElementById("end-overlay").classList.remove("show");
+          newGame();
+        };
+        document.getElementById("btn-mute").onclick = () => {
+          audio.muted = !audio.muted;
+          localStorage.setItem("moonopoly-mute", audio.muted ? "1" : "0");
+          updateMuteBtn();
+          if (!audio.muted) ensureAudio();
+        };
+
+        buildBoard();
+        newGame();
+        updateMuteBtn();
+        if (localStorage.getItem("moonopoly-tutored") !== "1") {
+          document.getElementById("tutorial").classList.add("show");
+        }
+        window.addEventListener("resize", () => renderTokens());
+      </script>
+    </body>
+    </html>
