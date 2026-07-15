@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <title>Moonopoly v2.1 — Feeder Finance Scandal Edition</title>
+  <title>Moonopoly v2.2 — Feeder Finance Scandal Edition</title>
   <meta name="description" content="Animated Monopoly-style satire of feeder association finance, with severity-ranked scandal cards from PBFC court-record themes." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -21,6 +21,8 @@
       --legal: #5dca86;
       --p1: #6ec6ff;
       --p2: #ff8fab;
+      --p3: #a0e86a;
+      --p4: #d4a0ff;
       --s: #ff4d4d;
       --a: #ff9f43;
       --b: #feca57;
@@ -111,6 +113,8 @@
     }
     .token.p0 { background: var(--p1); }
     .token.p1 { background: var(--p2); }
+    .token.p2 { background: var(--p3); }
+    .token.p3 { background: var(--p4); }
     .token.bounce { animation: tokBounce .28s ease; }
     @keyframes tokBounce {
       0% { transform: scale(1); }
@@ -129,6 +133,8 @@
     .flyer.show { opacity: 1; }
     .flyer.p0 { background: var(--p1); }
     .flyer.p1 { background: var(--p2); }
+    .flyer.p2 { background: var(--p3); }
+    .flyer.p3 { background: var(--p4); }
 
     .center .moon { font-size: 1.8rem; animation: floaty 3s ease-in-out infinite; }
     @keyframes floaty { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
@@ -166,7 +172,7 @@
     }
     .player-row.active { border-color: var(--gold); transform: scale(1.01); }
     .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: .3rem; vertical-align: middle; }
-    .dot.p0{background:var(--p1)}.dot.p1{background:var(--p2)}
+    .dot.p0{background:var(--p1)}.dot.p1{background:var(--p2)}.dot.p2{background:var(--p3)}.dot.p3{background:var(--p4)}
     .dice-box { text-align: center; min-height: 2.4rem; margin: .35rem 0; }
     .die {
       display: inline-flex; width: 42px; height: 42px; margin: 0 4px; border-radius: 10px;
@@ -347,12 +353,22 @@
         <div class="board" id="board"></div>
         <div class="flyer p0" id="flyer0"></div>
         <div class="flyer p1" id="flyer1"></div>
+        <div class="flyer p2" id="flyer2"></div>
+        <div class="flyer p3" id="flyer3"></div>
       </div>
 
       <div class="side">
         <div class="card">
           <h3>Table</h3>
+          <label style="display:block;font-size:.8rem;color:var(--muted);margin-bottom:.25rem">Mode</label>
+          <select id="mode-select" style="width:100%;margin-bottom:.55rem;padding:.45rem .5rem;border-radius:8px;border:1px solid var(--line);background:#101710;color:var(--ink);font:inherit">
+            <option value="1b">1 player vs Bot</option>
+            <option value="2h">2 player hotseat</option>
+            <option value="3h">3 player hotseat</option>
+            <option value="4h">4 player hotseat</option>
+          </select>
           <div class="players" id="players"></div>
+          <div id="turn-banner" style="display:none;margin:.35rem 0;padding:.45rem .55rem;border-radius:8px;background:#24301f;border:1px solid var(--gold);font-weight:700;text-align:center"></div>
           <div class="dice-box" id="dice-box">
             <span class="die" id="die1">·</span>
             <span class="die" id="die2">·</span>
@@ -369,11 +385,11 @@
                       <span class="chip">🔥 heat</span>
                       <span class="chip">🧊 freeze</span>
                     </div>
-                    <p class="fine">Win: $2800 or bankrupt the bot. High heat hurts. S-tier Order cards can freeze buying. Pass GO +$200. First launch shows a short tutorial.</p>
+                    <p class="fine">Win: $2800 or last operator standing. Hotseat: pass the device each turn. High heat hurts. S-tier freezes buying. Pass GO +$200.</p>
                   </div>
 
         <div class="card">
-          <h3>Your ranch</h3>
+          <h3 id="ranch-title">Active ranch</h3>
           <div class="stats">
             <div class="stat"><b id="cash">$1500</b><span>Cash</span></div>
             <div class="stat"><b id="props">0</b><span>Pens</span></div>
@@ -619,20 +635,67 @@
       ]
     };
 
+    const PLAYER_COLORS = ["var(--p1)", "var(--p2)", "var(--p3)", "var(--p4)"];
+    const HOTSEAT_NAMES = ["Blue Ranch", "Pink Ranch", "Green Ranch", "Purple Ranch"];
+
     const state = {
       turn: 0,
       busy: false,
       over: false,
+      mode: "1b",
       owners: Array(SPACES.length).fill(null),
       log: [],
-      players: []
+      players: [],
+      winnerId: null
     };
 
-    function newPlayers() {
-      return [
-        { id: 0, name: "You", human: true, cash: 1500, pos: 0, props: [], heat: 0, jail: 0, frozen: 0, strikes: 0, bankrupt: false },
-        { id: 1, name: "Yard Bot", human: false, cash: 1500, pos: 0, props: [], heat: 0, jail: 0, frozen: 0, strikes: 0, bankrupt: false }
-      ];
+    function parseMode(v) {
+      if (v === "2h") return { n: 2, bot: false };
+      if (v === "3h") return { n: 3, bot: false };
+      if (v === "4h") return { n: 4, bot: false };
+      return { n: 2, bot: true };
+    }
+
+    function newPlayers(mode) {
+      mode = mode || state.mode || "1b";
+      const { n, bot } = parseMode(mode);
+      const out = [];
+      for (let i = 0; i < n; i++) {
+        const isBot = bot && i === 1;
+        out.push({
+          id: i,
+          name: bot ? (i === 0 ? "You" : "Yard Bot") : HOTSEAT_NAMES[i],
+          human: !isBot,
+          cash: 1500,
+          pos: 0,
+          props: [],
+          heat: 0,
+          jail: 0,
+          frozen: 0,
+          strikes: 0,
+          bankrupt: false
+        });
+      }
+      return out;
+    }
+
+    function playerCount() { return state.players.length; }
+
+    function currentIndex() {
+      if (!state.players.length) return 0;
+      return ((state.turn % playerCount()) + playerCount()) % playerCount();
+    }
+
+    function currentPlayer() {
+      return state.players[currentIndex()];
+    }
+
+    function nextTurn() {
+      for (let i = 0; i < playerCount() + 1; i++) {
+        state.turn++;
+        const p = currentPlayer();
+        if (p && !p.bankrupt) break;
+      }
     }
 
     function cash(p, n, floatNear) {
@@ -745,26 +808,35 @@
       document.querySelectorAll(".cell[id^='cell-']").forEach(cell => {
         const idx = +cell.id.split("-")[1];
         const owner = state.owners[idx];
-        cell.style.outline = owner == null ? "" : `2px solid ${owner === 0 ? "var(--p1)" : "var(--p2)"}`;
+        cell.style.outline = owner == null ? "" : `2px solid ${PLAYER_COLORS[owner] || "var(--gold)"}`;
       });
     }
 
     function renderSide() {
-      const p = state.players[0];
+      if (!state.players.length) return;
+      const p = currentPlayer() || state.players[0];
       document.getElementById("cash").textContent = `$${p.cash}`;
       document.getElementById("props").textContent = String(p.props.length);
       document.getElementById("heat").textContent = String(p.heat);
       document.getElementById("infractions").textContent = String(p.strikes);
+      const rt = document.getElementById("ranch-title");
+      if (rt) rt.textContent = state.over ? "Final ranch" : p.name;
       const box = document.getElementById("players");
+      const ci = currentIndex();
       box.innerHTML = state.players.map((pl, i) => {
-        const active = !state.over && state.turn % 2 === i ? "active" : "";
+        const active = !state.over && ci === i ? "active" : "";
         return `<div class="player-row ${active}"><span><span class="dot p${pl.id}"></span>${esc(pl.name)}${pl.bankrupt?" 💀":""}${pl.frozen>0?" 🧊":""}${pl.jail>0?" ⛔":""}</span><span>$${pl.cash} · 🔥${pl.heat}</span></div>`;
       }).join("");
-      const humanTurn = !state.over && !state.busy && state.players[state.turn % 2].human;
+      const humanTurn = !state.over && !state.busy && p && p.human && !p.bankrupt;
       document.getElementById("btn-roll").disabled = !humanTurn;
-
-      // table heat = max player heat
-      const maxH = Math.max(...state.players.map(x => x.heat));
+      const tb = document.getElementById("turn-banner");
+      if (tb) {
+        if (!state.over && p) {
+          tb.style.display = "block";
+          tb.textContent = p.human ? (p.name + " — your roll") : (p.name + " thinking…");
+        } else tb.style.display = "none";
+      }
+      const maxH = Math.max(0, ...state.players.map(x => x.heat));
       const bar = document.getElementById("heat-bar");
       const label = document.getElementById("heat-label");
       if (bar) bar.style.width = Math.min(100, maxH * 12) + "%";
@@ -1009,14 +1081,23 @@
       log(`${p.name} buys ${s.name} for $${s.price}.`, "good");
     }
 
+    async function maybeContinueBot() {
+      if (state.over) return;
+      const p = currentPlayer();
+      if (p && !p.human && !p.bankrupt) setTimeout(takeTurn, 550);
+    }
+
     async function takeTurn() {
       if (state.over || state.busy) return;
-      const p = state.players[state.turn % 2];
-      if (p.bankrupt) {
-        state.turn++;
+      let p = currentPlayer();
+      let guard = 0;
+      while (p && p.bankrupt && guard < playerCount()) {
+        nextTurn();
+        p = currentPlayer();
+        guard++;
+      }
+      if (!p || p.bankrupt) {
         endCheck();
-        renderAll();
-        if (!state.over && !state.players[state.turn % 2].human) setTimeout(takeTurn, 450);
         return;
       }
       state.busy = true;
@@ -1026,10 +1107,12 @@
         p.jail--;
         log(`${p.name} serves time-out (${p.jail} left).`);
         state.busy = false;
-        state.turn++;
-        renderAll();
         endCheck();
-        if (!state.over && !state.players[state.turn % 2].human) setTimeout(takeTurn, 500);
+        if (!state.over) {
+          nextTurn();
+          renderAll();
+          await maybeContinueBot();
+        }
         return;
       }
 
@@ -1054,23 +1137,35 @@
       await land(p);
       endCheck();
       state.busy = false;
-      state.turn++;
-      renderAll();
-      if (!state.over && !state.players[state.turn % 2].human) setTimeout(takeTurn, 650);
+      if (!state.over) {
+        nextTurn();
+        renderAll();
+        const np = currentPlayer();
+        if (np && np.human && state.mode !== "1b") {
+          log(`Pass the device to ${np.name}.`, "hi");
+        }
+        await maybeContinueBot();
+      } else {
+        renderAll();
+      }
     }
 
     function endCheck() {
       const alive = state.players.filter(p => !p.bankrupt);
-      const rich = state.players.find(p => p.cash >= 2800);
+      const rich = state.players.find(p => !p.bankrupt && p.cash >= 2800);
+      const turnCap = 40 * Math.max(2, playerCount());
       if (alive.length === 1) {
         state.over = true;
+        state.winnerId = alive[0].id;
         banner(`${alive[0].name} wins — last operator standing.`);
       } else if (rich) {
         state.over = true;
+        state.winnerId = rich.id;
         banner(`${rich.name} hits $2800 and leaves in a gold gooseneck.`);
-      } else if (state.turn > 90) {
+      } else if (state.turn > turnCap) {
         state.over = true;
-        const w = [...state.players].sort((a,b)=>(b.cash+b.props.length*60)-(a.cash+a.props.length*60))[0];
+        const w = [...state.players].filter(p=>!p.bankrupt).sort((a,b)=>(b.cash+b.props.length*60)-(a.cash+a.props.length*60))[0];
+        state.winnerId = w.id;
         banner(`Time. ${w.name} wins on cattle clout.`);
       }
     }
@@ -1085,21 +1180,15 @@
         }
 
         function showEndScreen(msg) {
-          const you = state.players[0];
-          const won = !you.bankrupt && (msg.toLowerCase().includes("you wins") || msg.toLowerCase().includes("you hits") || (msg.startsWith("You")));
-          // more reliable win detection
-          const youWin = !you.bankrupt && (
-                      you.cash >= 2800 ||
-                      (state.players.filter(p => !p.bankrupt).length === 1) ||
-                      (state.turn > 90 && [...state.players].sort((a,b)=>(b.cash+b.props.length*60)-(a.cash+a.props.length*60))[0].id === 0)
-                    );
-          document.getElementById("end-title").textContent = youWin ? "You win the yard" : "The yard wins this round";
+          const focus = state.players.find(p => p.id === state.winnerId) || state.players[0];
+          const humanWon = !!(focus && focus.human);
+          document.getElementById("end-title").textContent = humanWon ? `${focus.name} wins the yard` : `${focus ? focus.name : "Bot"} takes it`;
           document.getElementById("end-blurb").textContent = msg;
-          document.getElementById("end-cash").textContent = `$${you.cash}`;
-          document.getElementById("end-strikes").textContent = String(you.strikes);
-          document.getElementById("end-heat").textContent = String(you.heat);
+          document.getElementById("end-cash").textContent = `$${focus ? focus.cash : 0}`;
+          document.getElementById("end-strikes").textContent = String(focus ? focus.strikes : 0);
+          document.getElementById("end-heat").textContent = String(focus ? focus.heat : 0);
           document.getElementById("end-overlay").classList.add("show");
-          if (youWin) {
+          if (humanWon) {
             sfx("win");
             confetti();
           } else {
@@ -1189,17 +1278,21 @@
         }
 
         function newGame() {
+          const sel = document.getElementById("mode-select");
+          if (sel) state.mode = sel.value;
           state.turn = 0;
           state.busy = false;
           state.over = false;
+          state.winnerId = null;
           state.owners = Array(SPACES.length).fill(null);
           state.log = [];
-          state.players = newPlayers();
+          state.players = newPlayers(state.mode);
           document.getElementById("win").classList.remove("show");
           document.getElementById("end-overlay").classList.remove("show");
           document.getElementById("die1").textContent = "·";
           document.getElementById("die2").textContent = "·";
-          log("New game. S-tier cards are the ‘wait, what?’ violations. Survive them.", "hi");
+          const modeLabel = ({ "1b": "1vBot", "2h": "2-hotseat", "3h": "3-hotseat", "4h": "4-hotseat" })[state.mode] || state.mode;
+          log(`New game (${modeLabel}). S-tier cards are the big ones. Survive them.`, "hi");
           renderAll();
         }
 
@@ -1225,6 +1318,15 @@
 
         document.getElementById("btn-roll").onclick = () => { ensureAudio(); takeTurn(); };
         document.getElementById("btn-new").onclick = () => newGame();
+        const modeSel = document.getElementById("mode-select");
+        if (modeSel) {
+          const saved = localStorage.getItem("moonopoly-mode");
+          if (saved) { modeSel.value = saved; state.mode = saved; }
+          modeSel.onchange = () => {
+            localStorage.setItem("moonopoly-mode", modeSel.value);
+            newGame();
+          };
+        }
         document.getElementById("btn-help").onclick = () => document.getElementById("tutorial").classList.add("show");
         document.getElementById("tutorial-go").onclick = () => {
           localStorage.setItem("moonopoly-tutored", "1");
