@@ -133,6 +133,24 @@
     }
     .stat span { color: var(--muted); font-size: .86rem; }
 
+    .sim-banner {
+      display: grid; grid-template-columns: 1.45fr .75fr; gap: 1rem; align-items: stretch;
+      margin: 1.25rem 0 0; padding: 1.3rem 1.4rem;
+      border: 1px solid rgba(230, 183, 89, .3); border-radius: 14px;
+      background: radial-gradient(circle at 100% 0, rgba(230, 183, 89, .14), transparent 34%), linear-gradient(135deg, #122527, #182f2b);
+      color: #f4f0e6; box-shadow: var(--shadow);
+    }
+    .sim-banner h2 { margin: .35rem 0 .45rem; color: #fff; font-family: var(--serif); font-size: clamp(1.45rem, 2.7vw, 2rem); line-height: 1.05; }
+    .sim-banner p { margin: 0 0 1rem; max-width: 68ch; color: #c8d4cf; }
+    .sim-kicker { color: #e6b759; font-family: var(--mono); font-size: .7rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
+    .sim-banner .btn-primary { background: #e6b759; color: #1d170c; }
+    .sim-banner .btn-primary:hover { background: #f0ca7d; color: #1d170c; }
+    .sim-proof { display: grid; grid-template-columns: repeat(3, 1fr); align-items: center; overflow: hidden; border: 1px solid rgba(255,255,255,.12); border-radius: 10px; background: rgba(255,255,255,.045); }
+    .sim-proof span { min-width: 0; padding: .8rem .45rem; border-right: 1px solid rgba(255,255,255,.1); color: #91aaa1; font-family: var(--mono); font-size: .58rem; text-align: center; text-transform: uppercase; }
+    .sim-proof span:last-child { border-right: 0; }
+    .sim-proof b { display: block; margin-bottom: .18rem; color: #f4f0e6; font-family: var(--serif); font-size: 1.25rem; }
+    @media (max-width: 800px) { .sim-banner { grid-template-columns: 1fr; } .sim-proof { min-height: 86px; } }
+
     /* Missing banner */
     .missing-banner {
       margin: 1.25rem 0 0;
@@ -159,7 +177,7 @@
       text-transform: uppercase; padding: .15rem .4rem; border-radius: 4px;
       margin-right: .4rem; vertical-align: .05em;
     }
-    .p-high { background: #c45c3a; color: #fff; }
+    .p-high { background: #a94428; color: #fff; }
     .p-med { background: #c9a227; color: #1a1814; }
     .tip-box {
       background: rgba(255,255,255,.08); border: 1px dashed rgba(255,255,255,.22);
@@ -325,6 +343,7 @@
         <span>Court file 2501-02733 · Alberta</span>
       </a>
       <nav aria-label="Primary">
+        <a href="simulator/">Cattle &amp; Credit</a>
         <a href="moonopoly.html">Moonopoly</a>
         <a href="play.html">Spot the Legal One</a>
         <a href="#story">Story</a>
@@ -344,7 +363,8 @@
       Alberta’s largest feeder association under the provincial loan-guarantee program was frozen by Minister’s Order, put under a court-appointed Restructuring Officer, then rebuilt. This site reconstructs that arc from <strong>court filings and statutes</strong> — and marks every blank we still cannot fill without primary documents.
     </p>
     <div class="hero-actions">
-      <a class="btn btn-primary" href="moonopoly.html">Play Moonopoly</a>
+      <a class="btn btn-primary" href="simulator/">Play Cattle &amp; Credit</a>
+      <a class="btn btn-ghost" href="moonopoly.html">Moonopoly</a>
       <a class="btn btn-ghost" href="play.html">Spot the Legal One</a>
       <a class="btn btn-ghost" href="#submit">I have a missing document</a>
       <a class="btn btn-ghost" href="#findings">Read the Order findings</a>
@@ -356,6 +376,20 @@
       <div class="stat"><b>$335M</b><span>Bank facility maximum</span></div>
       <div class="stat"><b>10</b><span>Order finding categories</span></div>
       <div class="stat"><b>117 pages</b><span>IIS Inspection Report recovered</span></div>
+    </div>
+
+    <div class="sim-banner">
+      <div>
+        <span class="sim-kicker">New · playable evidence pilot</span>
+        <h2>Raise the cattle. Finance the season. Keep the story straight.</h2>
+        <p>Operate a fictional feeder-financed farm through eligibility, deposits, cattle care, authority, sales and inspection. Real farm pressure makes the shortcuts tempting; source-pinned IIS context appears only after each decision.</p>
+        <a class="btn btn-primary" href="simulator/">Start a cattle season →</a>
+      </div>
+      <div class="sim-proof" aria-label="Simulator contents">
+        <span><b>7</b>decisions</span>
+        <span><b>5</b>case files</span>
+        <span><b>1</b>cattle cycle</span>
+      </div>
     </div>
 
     <div class="missing-banner" id="missing-banner">
@@ -383,8 +417,9 @@
     </div>
 
     <div class="toc" aria-label="On this page">
-      <a href="moonopoly.html">0. Play Moonopoly</a>
-      <a href="play.html">0b. Spot the Legal One</a>
+      <a href="simulator/">0. Cattle &amp; Credit</a>
+      <a href="moonopoly.html">0b. Moonopoly</a>
+      <a href="play.html">0c. Spot the Legal One</a>
       <a href="#story">1. Story</a>
       <a href="#timeline">2. Timeline</a>
       <a href="#findings">3. Findings</a>

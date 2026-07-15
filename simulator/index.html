@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#101c20" />
+    <meta
+      name="description"
+      content="A source-grounded cattle and feeder-finance simulator based on issues reported in the PBFC public record."
+    />
+    <title>Cattle & Credit — A Feeder Finance Simulator</title>
+    <script type="module" crossorigin src="./assets/index-DJYjuH7Q.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-Cki2pBOg.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#decision-panel">Skip to the current decision</a>
+
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="../" aria-label="PBFC Public Record home">
+          <span class="brand-mark" aria-hidden="true">C+C</span>
+          <span>
+            <span class="eyebrow">PBFC Public Record presents</span>
+            <strong>Cattle <i>&</i> Credit</strong>
+          </span>
+        </a>
+        <div class="top-actions">
+          <span class="pilot-badge">Playable pilot</span>
+          <button class="quiet-button" id="casebook-button" type="button" aria-haspopup="dialog">
+            <span aria-hidden="true">▤</span> Casebook <b id="casebook-count">0</b>
+          </button>
+          <button class="quiet-button icon-button" id="sound-button" type="button" aria-pressed="true" aria-label="Mute sound">
+            <span aria-hidden="true">♪</span>
+          </button>
+        </div>
+      </header>
+
+      <main class="game-layout" id="main-content">
+        <section class="world-panel" aria-label="Animated cattle ranch">
+          <div class="world-frame">
+            <div id="game-container" aria-hidden="true"></div>
+            <div class="world-vignette" aria-hidden="true"></div>
+            <div class="location-plate">
+              <span id="location-kicker">Picture Butte country</span>
+              <strong id="location-title">Your first feeder-financed season</strong>
+            </div>
+            <div class="progress-track" aria-label="Season progress">
+              <span class="progress-line"><i id="progress-fill"></i></span>
+              <ol id="progress-dots">
+                <li class="active"><span>1</span><small>Join</small></li>
+                <li><span>2</span><small>Fund</small></li>
+                <li><span>3</span><small>Buy</small></li>
+                <li><span>4</span><small>Raise</small></li>
+                <li><span>5</span><small>Control</small></li>
+                <li><span>6</span><small>Sell</small></li>
+                <li><span>7</span><small>Inspect</small></li>
+              </ol>
+            </div>
+          </div>
+
+          <section class="hud" aria-label="Farm status" tabindex="0">
+            <article class="hud-card cash-card">
+              <span>Working cash</span>
+              <strong id="hud-cash">$80,000</strong>
+              <small>simulated dollars</small>
+            </article>
+            <article class="hud-card">
+              <span>Herd</span>
+              <strong><b id="hud-herd">0</b> <small>head</small></strong>
+              <div class="mini-track"><i id="herd-meter"></i></div>
+            </article>
+            <article class="hud-card">
+              <span>Health</span>
+              <strong><b id="hud-health">92</b><small>/100</small></strong>
+              <div class="mini-track good"><i id="health-meter"></i></div>
+            </article>
+            <article class="hud-card">
+              <span>Integrity</span>
+              <strong><b id="hud-integrity">50</b><small>/100</small></strong>
+              <div class="mini-track gold"><i id="integrity-meter"></i></div>
+            </article>
+            <article class="hud-card scrutiny-card">
+              <span>Scrutiny</span>
+              <strong><b id="hud-scrutiny">0</b><small>/100</small></strong>
+              <div class="mini-track danger"><i id="scrutiny-meter"></i></div>
+            </article>
+          </section>
+        </section>
+
+        <aside class="decision-panel" id="decision-panel" tabindex="-1" aria-labelledby="decision-title">
+          <div class="decision-topline">
+            <span class="chapter-pill" id="decision-chapter">Season briefing</span>
+            <span class="decision-count" id="decision-count">Decision 0 of 7</span>
+          </div>
+          <div class="decision-copy">
+            <p class="decision-kicker" id="decision-kicker">Raise the herd. Finance the season. Keep the story straight.</p>
+            <h1 id="decision-title">Cattle <span>&</span> Credit</h1>
+            <p class="decision-prompt" id="decision-prompt">
+              Operate one cattle cycle through membership, financing, purchase, feeding, authority, sale and inspection.
+              Ordinary farm pressure will make some shortcuts tempting.
+            </p>
+          </div>
+          <div class="choice-list" id="choice-list">
+            <div class="briefing-note">
+              <span aria-hidden="true">◌</span>
+              <p><strong>Your choices are not labelled.</strong> Source context appears after the decision, not before it.</p>
+            </div>
+          </div>
+          <footer class="decision-footer">
+            <p><span class="status-dot"></span> Fictional farm · documentary issues are source-pinned</p>
+          </footer>
+        </aside>
+      </main>
+    </div>
+
+    <div class="intro-backdrop" id="intro-backdrop" role="dialog" aria-modal="true" aria-labelledby="intro-title">
+      <section class="intro-card">
+        <div class="intro-visual" aria-hidden="true">
+          <span class="ear-tag">2501</span>
+          <svg class="cow-silhouette" viewBox="0 0 210 130" role="img" aria-label="Stylized cattle silhouette">
+            <path d="M34 70c0-24 24-42 59-42h39c31 0 52 17 52 40 0 18-13 31-34 37H72c-23-4-38-16-38-35Z" fill="currentColor"/>
+            <path d="M169 46c7-18 22-24 35-17-9 3-14 9-16 19 9-3 16-1 21 6-8 0-13 3-17 8l-8 12-24-15 9-13Z" fill="currentColor"/>
+            <path d="M46 49 22 34c-5-3-9 2-5 7l22 26M44 42 32 23" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/>
+            <path d="M63 96v28M92 99v25M139 98v26M163 93v31" fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="round"/>
+            <path d="M79 31c9 20 27 25 45 7" fill="none" stroke="#8b6a49" stroke-width="10" stroke-linecap="round" opacity=".65"/>
+            <circle cx="184" cy="56" r="3" fill="#172326"/>
+          </svg>
+          <div class="ledger-lines"><i></i><i></i><i></i><i></i></div>
+        </div>
+        <div class="intro-body">
+          <p class="eyebrow">A ten-minute interactive case study</p>
+          <h2 id="intro-title">Can your cattle operation survive its own paperwork?</h2>
+          <p>
+            Raise a simulated herd through one feeder-financed season. Every decision changes the farm now—and the record an inspector sees later.
+          </p>
+          <ul class="intro-stats" aria-label="Pilot contents">
+            <li><strong>7</strong><span>decisions</span></li>
+            <li><strong>5</strong><span>sourced case files</span></li>
+            <li><strong>1</strong><span>cattle cycle</span></li>
+          </ul>
+          <button class="primary-button" id="start-button" type="button">
+            Start the season <span aria-hidden="true">→</span>
+          </button>
+          <p class="intro-caveat">
+            Based on administrative source material. An affidavit states that certain Report findings referenced in a Compliance Memorandum were subject to significant dispute. This is not a finding of criminal misconduct.
+          </p>
+        </div>
+      </section>
+    </div>
+
+    <dialog class="case-dialog" id="case-dialog" aria-labelledby="case-title" tabindex="-1">
+      <div class="dialog-accent" aria-hidden="true"></div>
+      <div class="dialog-header">
+        <div>
+          <p class="eyebrow" id="case-label">Case file unlocked</p>
+          <h2 id="case-title">Source context</h2>
+        </div>
+        <span class="tier-stamp" id="case-tier" aria-label="Severity tier">S</span>
+      </div>
+      <div id="case-body" tabindex="0" role="region" aria-label="Decision effects and source details"></div>
+      <div class="dialog-actions">
+        <button class="text-button" id="open-casebook-from-dialog" type="button">Open Casebook</button>
+        <button class="primary-button" id="continue-button" type="button">Continue the season <span aria-hidden="true">→</span></button>
+      </div>
+    </dialog>
+
+    <dialog class="casebook-dialog" id="casebook-dialog" aria-labelledby="casebook-title">
+      <div class="casebook-header">
+        <div>
+          <p class="eyebrow">Your documentary trail</p>
+          <h2 id="casebook-title">Season Casebook</h2>
+        </div>
+        <button class="close-button" id="close-casebook" type="button" aria-label="Close Casebook">×</button>
+      </div>
+      <p class="casebook-intro">
+        These entries summarize what IIS reported or opined. Opened files reflect decisions encountered in this fictional season—not findings about the player.
+      </p>
+      <div class="casebook-list" id="casebook-list"></div>
+    </dialog>
+
+    <div class="sr-only" id="live-region" aria-live="polite" aria-atomic="true"></div>
+
+  </body>
+</html>
